@@ -201,10 +201,13 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     //------------------------------------------------------
     tcGameMain->setAlpha(touchSettings.alpha);
     tcGameMain->addControl(new touchcontrols::Button("back", touchcontrols::RectF(0, 0, 2, 2), "back_button", KEY_BACK_BUTTON, false, false, "Show menu"));
-    tcGameMain->addControl(new touchcontrols::Button("attack", touchcontrols::RectF(20, 7, 23, 10), "shoot", KEY_SHOOT, false, false, "Attack!"));
-    tcGameMain->addControl(new touchcontrols::Button("attack2", touchcontrols::RectF(3, 5, 6, 8), "shoot", KEY_SHOOT, false, true, "Attack! (duplicate)"));
+    // Bethesda-style dual-fire layout: keep a primary fire button on the right and
+    // expose a second fire button above the movement stick for thumb reach.
+    tcGameMain->addControl(new touchcontrols::Button("attack", touchcontrols::RectF(21, 9, 24, 12), "shoot", KEY_SHOOT, false, false, "Attack!"));
+    tcGameMain->addControl(new touchcontrols::Button("attack2", touchcontrols::RectF(2, 4.5, 5, 7), "shoot", KEY_SHOOT, false, false, "Secondary fire"));
 
-    tcGameMain->addControl(new touchcontrols::Button("use", touchcontrols::RectF(23, 6, 26, 9), "use", PORT_ACT_USE, false, false, "Use/Open"));
+    // Put the context/action button in the lower middle, between the two thumb zones.
+    tcGameMain->addControl(new touchcontrols::Button("use", touchcontrols::RectF(11, 11, 14, 14), "use", PORT_ACT_USE, false, false, "Use/Open"));
     tcGameMain->addControl(new touchcontrols::Button("quick_save", touchcontrols::RectF(24, 0, 26, 2), "save", PORT_ACT_QUICKSAVE, false, false, "Quick save"));
     tcGameMain->addControl(new touchcontrols::Button("quick_load", touchcontrols::RectF(20, 0, 22, 2), "load", PORT_ACT_QUICKLOAD, false, false, "Quick load"));
     tcGameMain->addControl(new touchcontrols::Button("map", touchcontrols::RectF(2, 0, 4, 2), "map", PORT_ACT_MAP, false, false, "Show map"));
@@ -251,7 +254,8 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     tcGameMain->addControl(runButton); // Common run button created in touch_interface_base
 
     tcGameMain->addControl(new touchcontrols::Button("show_custom", touchcontrols::RectF(0, 7, 2, 9), "custom_show", KEY_SHOW_CUSTOM, false, true, "Show custom"));
-    tcGameMain->addControl(new touchcontrols::Button("show_weapons", touchcontrols::RectF(12, 14, 14, 16), "show_weapons", KEY_SHOW_WEAPONS, false, false, "Show numbers"));
+    // Weapon selection sits at the bottom centre, like Bethesda's mobile layout.
+    tcGameMain->addControl(new touchcontrols::Button("show_weapons", touchcontrols::RectF(11, 14, 15, 16), "show_weapons", KEY_SHOW_WEAPONS, false, false, "Show weapons"));
     tcGameMain->addControl(new touchcontrols::Button("next_weapon", touchcontrols::RectF(0, 3, 3, 5), "next_weap", PORT_ACT_NEXT_WEP, false, false, "Next weapon"));
     tcGameMain->addControl(new touchcontrols::Button("prev_weapon", touchcontrols::RectF(0, 5, 3, 7), "prev_weap", PORT_ACT_PREV_WEP, false, false, "Prev weapon"));
     tcGameMain->addControl(new touchcontrols::Button("console", touchcontrols::RectF(6, 0, 8, 2), "tild", PORT_ACT_CONSOLE, false, true, "Console"));
@@ -479,9 +483,11 @@ void TouchInterface::createControlsDoom(std::string filesPath)
         touchcontrols::setGlobalXmlAppend(".strife");
 
     tcMenuMain->setXMLFile((std::string) filesPath + "/menu.xml");
+    // Use a new profile filename so an existing legacy layout cannot overwrite
+    // these defaults on first launch after updating.
     tcGameMain->setXMLFile((std::string) filesPath + "/game_"
     ENGINE_NAME
-    ".xml");
+    "_bethesda.xml");
     tcInventory->setXMLFile((std::string) filesPath + "/inventory_"
     ENGINE_NAME
     ".xml");
