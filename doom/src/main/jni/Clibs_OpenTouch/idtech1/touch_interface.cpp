@@ -266,14 +266,14 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     // ButtonGrid over it: the duplicate grid produced blocky cell backgrounds
     // and competing touch targets in the same thumb area.
 
-    touchJoyRight = new touchcontrols::TouchJoy("touch", touchcontrols::RectF(13.5, 5.5, 21, 13.5), "look_arrow", "fixed_stick_circle");
+    touchJoyRight = new touchcontrols::TouchJoy("touch", touchcontrols::RectF(13.5, 5.5, 21, 13.5), "look_arrow", "");
     // Fixed right thumb zone for predictable camera aiming.
     touchJoyRight->setCenterAnchor(true);
     tcGameMain->addControl(touchJoyRight);
     touchJoyRight->signal_move.connect(sigc::mem_fun(this, &TouchInterface::rightStick));
     touchJoyRight->signal_double_tap.connect(sigc::mem_fun(this, &TouchInterface::rightDoubleTap));
 
-    touchJoyLeft = new touchcontrols::TouchJoy("stick", touchcontrols::RectF(0.5, 5.5, 8, 13.5), "strafe_arrow", "fixed_stick_circle");
+    touchJoyLeft = new touchcontrols::TouchJoy("stick", touchcontrols::RectF(0.5, 5.5, 8, 13.5), "strafe_arrow", "");
     // Keep a visible anchored movement pad so the left thumb has a clear home zone.
     touchJoyLeft->setCenterAnchor(true);
     tcGameMain->addControl(touchJoyLeft);
