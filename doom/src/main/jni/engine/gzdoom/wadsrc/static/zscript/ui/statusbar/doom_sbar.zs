@@ -109,15 +109,19 @@ class DoomStatusBar : BaseStatusBar
 
 		if (CPlayer.mo.InvSel != null && !Level.NoInventoryBar)
 		{
-			DrawInventoryIcon(CPlayer.mo.InvSel, (160, 198), DI_DIMDEPLETED);
+			// Keep the selected item in its own narrow panel instead of drawing
+			// it over the weapon icon in the middle of the HUD.
+			DrawString(mIndexFont, "ITEM", (190, 178), DI_NOSHADOW, Font.CR_GOLD);
+			DrawInventoryIcon(CPlayer.mo.InvSel, (200, 191), DI_DIMDEPLETED, 1.0, (14, 14));
 			if (CPlayer.mo.InvSel.Amount > 1)
 			{
-				DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (175, 198-mIndexFont.mFont.GetHeight()), DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
+				DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (210, 198), DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
 			}
 		}
 		if (isInventoryBarVisible())
 		{
-			DrawInventoryBar(diparms, (48, 169), 7, DI_ITEM_LEFT_TOP);
+			// Raise the temporary inventory selector above the custom bottom strip.
+			DrawInventoryBar(diparms, (48, 138), 7, DI_ITEM_LEFT_TOP);
 		}
 	}
 
