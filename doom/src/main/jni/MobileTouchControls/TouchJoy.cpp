@@ -142,7 +142,9 @@ bool TouchJoy::processPointer(int action, int tpid, float x, float y)
     {
         if(pid == tpid)  //Finger already down
         {
-            if((otherTouchJoySWAPFIX->pid == tpid) && (!controlPos.contains(x, y)))  // If the other control has got the point and not in control area, something FU
+            if(otherTouchJoySWAPFIX != NULL &&
+               (otherTouchJoySWAPFIX->pid == tpid) &&
+               (!controlPos.contains(x, y)))  // If the other control has got the point and not in control area, something FU
             {
                 pid = -1; // Just stop
             }
@@ -231,13 +233,56 @@ bool TouchJoy::drawGL(bool forEditor)
             }
 
             bgRect.resize(width, height);
-            // Draw a well only when a real texture is configured. Empty
-            // background names are intentional for the clean, icon-only HUD.
+            // Draw the optional supplied well texture first.
             if(glTexBackground != -1)
                 gl_drawRect(glTexBackground, controlPos.left + (controlPos.width() - width) / 2, controlPos.top + (controlPos.height() - height) / 2, bgRect);
 
-            const float knobX = (pid != -1 ? fingerPos.x : controlPos.left + controlPos.width() / 2);
-            const float knobY = (pid != -1 ? fingerPos.y : controlPos.top + controlPos.height() / 2);
+            // Custom Bethesda-inspired instrument well. Thin concentric
+            // rings and cardinal index marks provide a tactile reference
+            // without filling the movement/look zones with opaque artwork.
+            static GLLines wellRing(32);
+            static GLLines wellTicks(8);
+            const float cx = controlPos.left + controlPos.width() * 0.5f;
+            const float cy = controlPos.top + controlPos.height() * 0.5f;
+            const float radius = (width < height ? width : height) * 0.46f;
+            const float innerRadius = radius * 0.88f;
+            const float tau = 6.28318530718f;
+            for(int n = 0; n < 24; ++n)
+            {
+                const float a0 = tau * (float)n / 24.0f;
+                const float a1 = tau * (float)(n + 1) / 24.0f;
+                const int v = n * 6;
+                wellRing.vertices[v + 0] = cosf(a0) * radius;
+                wellRing.vertices[v + 1] = sinf(a0) * radius;
+                wellRing.vertices[v + 2] = 0.0f;
+                wellRing.vertices[v + 3] = cosf(a1) * radius;
+                wellRing.vertices[v + 4] = sinf(a1) * radius;
+                wellRing.vertices[v + 5] = 0.0f;
+            }
+            for(int n = 0; n < 8; ++n)
+            {
+                const float a = tau * (float)n / 8.0f;
+                const int v = n * 6;
+                wellTicks.vertices[v + 0] = cosf(a) * innerRadius;
+                wellTicks.vertices[v + 1] = sinf(a) * innerRadius;
+                wellTicks.vertices[v + 2] = 0.0f;
+                wellTicks.vertices[v + 3] = cosf(a) * radius;
+                wellTicks.vertices[v + 4] = sinf(a) * radius;
+                wellTicks.vertices[v + 5] = 0.0f;
+            }
+
+            GLfloat oldR = 1.0f, oldG = 1.0f, oldB = 1.0f, oldA = 1.0f;
+            gl_getColor(oldR, oldG, oldB, oldA);
+            if(tag == "touch")
+                gl_color4f(0.46f, 0.78f, 0.88f, oldA * (pid != -1 ? 0.78f : 0.36f));
+            else
+                gl_color4f(0.86f, 0.67f, 0.38f, oldA * (pid != -1 ? 0.72f : 0.30f));
+            gl_drawLines(cx, cy, wellRing);
+            gl_drawLines(cx, cy, wellTicks);
+            gl_color4f(oldR, oldG, oldB, oldA);
+
+            const float knobX = (pid != -1 ? fingerPos.x : cx);
+            const float knobY = (pid != -1 ? fingerPos.y : cy);
             gl_drawRect(glTex, knobX - glRect.width / 2, knobY - glRect.height / 2, glRect);
         }
         else
