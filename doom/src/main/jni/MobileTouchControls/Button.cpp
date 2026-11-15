@@ -177,12 +177,12 @@ bool Button::drawGL(bool forEditor)
                 const float y = controlPos.top;
                 const float w = controlPos.right - controlPos.left;
                 const float h = controlPos.bottom - controlPos.top;
-                const float pad = 0.12f;
-                const float edge = 0.045f;
+                const float pad = 0.18f;
+                const float edge = 0.07f;
                 GLRect panel;
                 GLRect topEdge, bottomEdge, leftEdge, rightEdge;
                 panel.resize(w + pad * 2.0f, h + pad * 2.0f);
-                gl_drawRect(0.035f, 0.045f, 0.055f, 0.72f * originalA,
+                gl_drawRect(0.025f, 0.032f, 0.040f, 0.88f * originalA,
                             x - pad, y - pad, panel);
 
                 // Four fine amber-grey strokes form a consistent HUD frame.
@@ -190,13 +190,13 @@ bool Button::drawGL(bool forEditor)
                 bottomEdge.resize(w + pad * 2.0f, edge);
                 leftEdge.resize(edge, h + pad * 2.0f);
                 rightEdge.resize(edge, h + pad * 2.0f);
-                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f * originalA,
+                gl_drawRect(0.98f, 0.62f, 0.22f, 0.95f * originalA,
                             x - pad, y - pad, topEdge);
-                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f * originalA,
+                gl_drawRect(0.98f, 0.62f, 0.22f, 0.95f * originalA,
                             x - pad, y + h + pad - edge, bottomEdge);
-                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f * originalA,
+                gl_drawRect(0.98f, 0.62f, 0.22f, 0.95f * originalA,
                             x - pad, y - pad, leftEdge);
-                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f * originalA,
+                gl_drawRect(0.98f, 0.62f, 0.22f, 0.95f * originalA,
                             x + w + pad - edge, y - pad, rightEdge);
                 // Restore the owning HUD's tint/opacity before drawing the icon.
                 gl_color4f(originalR, originalG, originalB, originalA);
