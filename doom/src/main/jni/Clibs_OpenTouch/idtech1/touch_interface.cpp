@@ -138,7 +138,7 @@ void TouchInterface::createControls(std::string filesPath)
 
 void TouchInterface::createControlsDoom(std::string filesPath)
 {
-    LOGI("creating controls - Bethesda HUD v11");
+    LOGI("creating controls - DOOM mobile HUD redesign v1");
 
     // Keep joystick ownership per finger. A second touch must not steal the
     // active look/move stick while another finger holds fire.
@@ -205,18 +205,16 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     //------------------------------------------------------
     tcGameMain->setAlpha(touchSettings.alpha);
     tcGameMain->addControl(new touchcontrols::Button("back", touchcontrols::RectF(0, 0, 2, 2), "back_button", KEY_BACK_BUTTON, false, false, "Show menu"));
-    // Landscape HUD: a broad left movement pad, a separate right look pad,
-    // and a compact action cluster at the far right. The primary trigger is
-    // deliberately the largest button; secondary fire and Use sit above and
-    // below it with clear gaps. All original bindings are preserved.
-    tcGameMain->addControl(new touchcontrols::Button("attack", touchcontrols::RectF(22.0, 10.2, 26.0, 14.2), "shoot", KEY_SHOOT, false, false, "Attack!"));
-    tcGameMain->addControl(new touchcontrols::Button("attack2", touchcontrols::RectF(20.0, 7.6, 22.4, 10.0), "shoot_alt", PORT_ACT_ALT_ATTACK, false, false, "Alternate fire"));
-
-    tcGameMain->addControl(new touchcontrols::Button("use", touchcontrols::RectF(19.8, 12.0, 21.8, 14.0), "use", PORT_ACT_USE, false, false, "Use/Open"));
-    tcGameMain->addControl(new touchcontrols::Button("quick_save", touchcontrols::RectF(24, 0, 26, 2), "save", PORT_ACT_QUICKSAVE, false, false, "Quick save"));
-    tcGameMain->addControl(new touchcontrols::Button("quick_load", touchcontrols::RectF(20, 0, 22, 2), "load", PORT_ACT_QUICKLOAD, false, false, "Quick load"));
-    tcGameMain->addControl(new touchcontrols::Button("map", touchcontrols::RectF(2, 0, 4, 2), "map", PORT_ACT_MAP, false, false, "Show map"));
-    tcGameMain->addControl(new touchcontrols::Button("keyboard", touchcontrols::RectF(8, 0, 10, 2), "keyboard", KEY_SHOW_KBRD, false, false, "Show keyboard"));
+    // Redesigned landscape FPS HUD: movement left, free camera-look centre/right,
+    // and a distinct action cluster on the far edge. Every primary target has
+    // breathing room; secondary utilities stay out of the combat area.
+    tcGameMain->addControl(new touchcontrols::Button("attack", touchcontrols::RectF(22.0, 10.6, 26.0, 14.6), "shoot", KEY_SHOOT, false, false, "Fire"));
+    tcGameMain->addControl(new touchcontrols::Button("attack2", touchcontrols::RectF(19.4, 8.2, 21.7, 10.5), "shoot_alt", PORT_ACT_ALT_ATTACK, false, false, "Alternate fire"));
+    tcGameMain->addControl(new touchcontrols::Button("use", touchcontrols::RectF(19.4, 11.5, 21.7, 13.8), "use", PORT_ACT_USE, false, false, "Use / open"));
+    tcGameMain->addControl(new touchcontrols::Button("quick_save", touchcontrols::RectF(24, 0, 26, 2), "save", PORT_ACT_QUICKSAVE, false, true, "Quick save"));
+    tcGameMain->addControl(new touchcontrols::Button("quick_load", touchcontrols::RectF(22, 0, 24, 2), "load", PORT_ACT_QUICKLOAD, false, true, "Quick load"));
+    tcGameMain->addControl(new touchcontrols::Button("map", touchcontrols::RectF(2.1, 0.25, 3.9, 2.05), "map", PORT_ACT_MAP, false, false, "Map"));
+    tcGameMain->addControl(new touchcontrols::Button("keyboard", touchcontrols::RectF(4.1, 0.25, 5.9, 2.05), "keyboard", KEY_SHOW_KBRD, false, true, "Keyboard"));
 
     tcGameMain->addControl(new touchcontrols::Button("mp_chat", touchcontrols::RectF(18, 0, 20, 2), "chat", PORT_ACT_MP_SAY, false, true, "Multiplayer chat"));
 
@@ -245,7 +243,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     tcGameMain->addControl(flyQs);
 
 
-    tcGameMain->addControl(new touchcontrols::Button("jump", touchcontrols::RectF(23.5, 7.6, 25.5, 9.6), "jump", PORT_ACT_JUMP, false, hideJump, "Jump"));
+    tcGameMain->addControl(new touchcontrols::Button("jump", touchcontrols::RectF(22.6, 7.4, 25.0, 9.8), "jump", PORT_ACT_JUMP, false, hideJump, "Jump"));
     tcGameMain->addControl(new touchcontrols::Button("use_inventory", touchcontrols::RectF(0, 9, 2, 11), "inventory", KEY_SHOW_INV, false, hideInventory, "Show Inventory"));
     tcGameMain->addControl(new touchcontrols::Button("activate_inventory", touchcontrols::RectF(22, 3, 24, 5), "inventory_use_fade", PORT_ACT_INVUSE, false, true, "Use Inventory"));
     tcGameMain->addControl(new touchcontrols::Button("crouch", touchcontrols::RectF(24, 14, 26, 16), "crouch", PORT_ACT_DOWN, false, true, "Crouch"));
@@ -258,10 +256,10 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     tcGameMain->addControl(runButton); // Common run button created in touch_interface_base
 
     tcGameMain->addControl(new touchcontrols::Button("show_custom", touchcontrols::RectF(0, 7, 2, 9), "custom_show", KEY_SHOW_CUSTOM, false, true, "Show custom"));
-    // Keep weapon controls grouped in a narrow top-centre toolbar.
-    tcGameMain->addControl(new touchcontrols::Button("show_weapons", touchcontrols::RectF(11, 0, 13, 2), "show_weapons", KEY_SHOW_WEAPONS, false, false, "Show weapons"));
-    tcGameMain->addControl(new touchcontrols::Button("next_weapon", touchcontrols::RectF(13.2, 0, 15.2, 2), "next_weap", PORT_ACT_NEXT_WEP, false, false, "Next weapon"));
-    tcGameMain->addControl(new touchcontrols::Button("prev_weapon", touchcontrols::RectF(15.4, 0, 17.4, 2), "prev_weap", PORT_ACT_PREV_WEP, false, false, "Prev weapon"));
+    // Compact weapon controls in a consistent top-centre utility strip.
+    tcGameMain->addControl(new touchcontrols::Button("show_weapons", touchcontrols::RectF(11.0, 0.25, 13.0, 2.25), "show_weapons", KEY_SHOW_WEAPONS, false, false, "Weapons"));
+    tcGameMain->addControl(new touchcontrols::Button("prev_weapon", touchcontrols::RectF(13.2, 0.25, 15.0, 2.05), "prev_weap", PORT_ACT_PREV_WEP, false, false, "Previous weapon"));
+    tcGameMain->addControl(new touchcontrols::Button("next_weapon", touchcontrols::RectF(15.2, 0.25, 17.0, 2.05), "next_weap", PORT_ACT_NEXT_WEP, false, false, "Next weapon"));
     tcGameMain->addControl(new touchcontrols::Button("console", touchcontrols::RectF(6, 0, 8, 2), "tild", PORT_ACT_CONSOLE, false, true, "Console"));
     tcGameMain->addControl(new touchcontrols::Button("gyro_toggle", touchcontrols::RectF(17, 3, 19, 5), "gyro", PORT_ACT_GYRO_TOGGLE, false, true, "Gyro Smart Toggle"));
 
@@ -269,14 +267,14 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     // ButtonGrid over it: the duplicate grid produced blocky cell backgrounds
     // and competing touch targets in the same thumb area.
 
-    touchJoyRight = new touchcontrols::TouchJoy("touch", touchcontrols::RectF(13.5, 4.5, 19.5, 12.5), "look_arrow", "");
+    touchJoyRight = new touchcontrols::TouchJoy("touch", touchcontrols::RectF(10.0, 3.2, 19.0, 14.8), "look_arrow", "");
     // Fixed right thumb zone for predictable camera aiming.
     touchJoyRight->setCenterAnchor(true);
     tcGameMain->addControl(touchJoyRight);
     touchJoyRight->signal_move.connect(sigc::mem_fun(this, &TouchInterface::rightStick));
     touchJoyRight->signal_double_tap.connect(sigc::mem_fun(this, &TouchInterface::rightDoubleTap));
 
-    touchJoyLeft = new touchcontrols::TouchJoy("stick", touchcontrols::RectF(0.5, 4.5, 8, 12.5), "strafe_arrow", "");
+    touchJoyLeft = new touchcontrols::TouchJoy("stick", touchcontrols::RectF(0.5, 5.0, 8.5, 14.5), "strafe_arrow", "");
     // The centered thumb marker provides a stable reference; touch input is accepted across the full left zone.
     touchJoyLeft->setCenterAnchor(true);
     tcGameMain->addControl(touchJoyLeft);
@@ -488,12 +486,10 @@ void TouchInterface::createControlsDoom(std::string filesPath)
         touchcontrols::setGlobalXmlAppend(".strife");
 
     tcMenuMain->setXMLFile((std::string) filesPath + "/menu.xml");
-    // Use a new profile filename so an existing legacy layout cannot overwrite
-    // these defaults on first launch after updating.
-    // Versioned profile bypasses old saved coordinates that override defaults.
+    // New profile ensures previous saved layouts do not override this redesign.
     tcGameMain->setXMLFile((std::string) filesPath + "/game_"
     ENGINE_NAME
-    "_bethesda_v10.xml");
+    "_doom_mobile_redesign_v1.xml");
     tcInventory->setXMLFile((std::string) filesPath + "/inventory_"
     ENGINE_NAME
     ".xml");
@@ -502,7 +498,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     ".xml");
     tcGameWeapons->setXMLFile((std::string) filesPath + "/weapons_"
     ENGINE_NAME
-    "_bethesda_v8.xml");
+    "_doom_mobile_redesign_v1.xml");
     tcCustomButtons->setXMLFile((std::string) filesPath + "/custom_buttons_0_"
     ENGINE_NAME
     ".xml");
