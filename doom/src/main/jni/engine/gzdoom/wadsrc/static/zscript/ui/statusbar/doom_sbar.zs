@@ -57,11 +57,27 @@ class DoomStatusBar : BaseStatusBar
 
 	protected void DrawMainBar (double TicFrac)
 	{
-		// Compact modern bottom HUD. Values are read from live player state.
-		Fill(color(238, 8, 12, 18), 0, 168, 320, 32);
-		Fill(color(255, 220, 76, 34), 0, 168, 320, 2);
-		Fill(color(255, 52, 62, 74), 104, 176, 1, 20);
-		Fill(color(255, 52, 62, 74), 210, 176, 1, 20);
+		// Industrial, Fallout-era instrument panel: layered graphite plates,
+		// restrained brass edge-lighting and separate readable data bays.
+		Fill(color(246, 5, 8, 12), 0, 168, 320, 32);
+		Fill(color(255, 220, 154, 68), 0, 168, 320, 1);
+		Fill(color(255, 66, 48, 30), 0, 169, 320, 1);
+		Fill(color(224, 17, 23, 29), 7, 173, 82, 23);
+		Fill(color(224, 17, 23, 29), 108, 173, 82, 23);
+		Fill(color(224, 17, 23, 29), 214, 173, 99, 23);
+		Fill(color(255, 86, 68, 43), 7, 173, 82, 1);
+		Fill(color(255, 86, 68, 43), 108, 173, 82, 1);
+		Fill(color(255, 86, 68, 43), 214, 173, 99, 1);
+		Fill(color(255, 62, 70, 75), 99, 176, 1, 17);
+		Fill(color(255, 62, 70, 75), 202, 176, 1, 17);
+		// Small brass registration marks make the panel feel manufactured,
+		// without adding visual clutter over the play area.
+		Fill(color(255, 220, 154, 68), 9, 175, 5, 1);
+		Fill(color(255, 220, 154, 68), 85, 175, 2, 1);
+		Fill(color(255, 220, 154, 68), 110, 175, 5, 1);
+		Fill(color(255, 220, 154, 68), 186, 175, 2, 1);
+		Fill(color(255, 220, 154, 68), 216, 175, 5, 1);
+		Fill(color(255, 220, 154, 68), 308, 175, 3, 1);
 
 		Ammo a1, a2;
 		int ammoCount1, ammoCount2;
@@ -218,11 +234,22 @@ class DoomStatusBar : BaseStatusBar
 		int armorWidth = int(clamp(armor, 0, 200) * meterWidth / 200);
 		int anchor = DI_SCREEN_LEFT_BOTTOM;
 
-		Fill(color(238, 8, 12, 18), 0, -32, width, 32, anchor);
-		Fill(color(255, 220, 76, 34), 0, -32, width, 2, anchor);
-		Fill(color(255, 52, 62, 74), width * 0.25, -25, 1, 19, anchor);
-		Fill(color(255, 52, 62, 74), width * 0.49, -25, 1, 19, anchor);
-		Fill(color(255, 52, 62, 74), width * 0.69, -25, 1, 19, anchor);
+		// Match the classic status-bar treatment in fullscreen mode, anchored
+		// to the bottom edge and scaled with the current display width.
+		Fill(color(246, 5, 8, 12), 0, -32, width, 32, anchor);
+		Fill(color(255, 220, 154, 68), 0, -32, width, 1, anchor);
+		Fill(color(255, 66, 48, 30), 0, -31, width, 1, anchor);
+		Fill(color(224, 17, 23, 29), width * 0.025, -27, width * 0.21, 22, anchor);
+		Fill(color(224, 17, 23, 29), width * 0.265, -27, width * 0.21, 22, anchor);
+		Fill(color(224, 17, 23, 29), width * 0.505, -27, width * 0.18, 22, anchor);
+		Fill(color(224, 17, 23, 29), width * 0.715, -27, width * 0.25, 22, anchor);
+		Fill(color(255, 86, 68, 43), width * 0.025, -27, width * 0.21, 1, anchor);
+		Fill(color(255, 86, 68, 43), width * 0.265, -27, width * 0.21, 1, anchor);
+		Fill(color(255, 86, 68, 43), width * 0.505, -27, width * 0.18, 1, anchor);
+		Fill(color(255, 86, 68, 43), width * 0.715, -27, width * 0.25, 1, anchor);
+		Fill(color(255, 62, 70, 75), width * 0.25, -25, 1, 18, anchor);
+		Fill(color(255, 62, 70, 75), width * 0.49, -25, 1, 18, anchor);
+		Fill(color(255, 62, 70, 75), width * 0.69, -25, 1, 18, anchor);
 
 		DrawString(mIndexFont, "HEALTH", (healthX, -22), anchor|DI_NOSHADOW, Font.CR_GOLD);
 		DrawString(mHUDFont, FormatNumber(CPlayer.health, 3), (healthX, -9),
