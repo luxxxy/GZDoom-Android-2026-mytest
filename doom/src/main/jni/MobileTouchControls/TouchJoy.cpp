@@ -46,8 +46,9 @@ void TouchJoy::resetOutput()
 
 void TouchJoy::updateSize()
 {
-    //glRect.resize(controlPos.right - controlPos.left, controlPos.bottom - controlPos.top);
-    glRect.resize(1 * 0.1, 1.6 * 0.1);
+    // Size the thumb cap relative to its touch zone so it remains easy to see
+    // on both compact phones and larger landscape displays.
+    glRect.resize(controlPos.width() * 0.22f, controlPos.height() * 0.22f);
 }
 
 
@@ -227,8 +228,12 @@ bool TouchJoy::drawGL(bool forEditor)
             }
 
             bgRect.resize(width, height);
-            // draw centred
+            // Draw the translucent joystick well, then its thumb cap.
             gl_drawRect(glTexBackground, controlPos.left + (controlPos.width() - width) / 2, controlPos.top + (controlPos.height() - height) / 2, bgRect);
+
+            const float knobX = (pid != -1 ? fingerPos.x : controlPos.left + controlPos.width() / 2);
+            const float knobY = (pid != -1 ? fingerPos.y : controlPos.top + controlPos.height() / 2);
+            gl_drawRect(glTex, knobX - glRect.width / 2, knobY - glRect.height / 2, glRect);
         }
         else
         {
