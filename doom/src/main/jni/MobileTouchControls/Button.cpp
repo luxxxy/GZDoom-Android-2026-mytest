@@ -1,5 +1,6 @@
 #include "Button.h"
 #include "TouchControlsConfig.h"
+#include <math.h>
 
 #ifdef __IOS__
 #include <sys/time.h>
