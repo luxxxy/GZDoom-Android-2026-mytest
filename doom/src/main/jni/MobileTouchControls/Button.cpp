@@ -177,8 +177,19 @@ bool Button::drawGL(bool forEditor)
                     gl_drawRect(glTexBackdrop, bx, by, glBackdropRect);
                 }
 
+                // Warm fire controls and cool utility controls read clearly
+                // against the game without opaque square panels.
+                if(tag == "attack")
+                    gl_color4f(1.0f, 0.38f, 0.18f, drawA);
+                else if(tag == "attack2")
+                    gl_color4f(1.0f, 0.62f, 0.24f, drawA);
+                else if(tag == "use")
+                    gl_color4f(0.35f, 0.88f, 1.0f, drawA);
+                else if(tag == "show_weapons" || tag == "next_weapon" || tag == "prev_weapon")
+                    gl_color4f(1.0f, 0.82f, 0.38f, drawA);
+
                 gl_drawRect(glTex[glTexDraw], controlPos.left, controlPos.top, glRect);
-            // Avoid leaking per-button alpha into the next control draw.
+            // Avoid leaking per-button tint or alpha into the next control draw.
             gl_color4f(drawR, drawG, drawB, drawA);
         }
     }
