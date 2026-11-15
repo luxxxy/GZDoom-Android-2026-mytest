@@ -138,7 +138,7 @@ void TouchInterface::createControls(std::string filesPath)
 
 void TouchInterface::createControlsDoom(std::string filesPath)
 {
-    LOGI("creating controls");
+    LOGI("creating controls - Bethesda HUD v3");
 
     tcMenuMain = new touchcontrols::TouchControls("menu", false, true, 10, false);
     tcYesNo = new touchcontrols::TouchControls("yes_no", false, false);
@@ -493,7 +493,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     // Versioned profile bypasses old saved coordinates that override defaults.
     tcGameMain->setXMLFile((std::string) filesPath + "/game_"
     ENGINE_NAME
-    "_bethesda_v2.xml");
+    "_bethesda_v3.xml");
     tcInventory->setXMLFile((std::string) filesPath + "/inventory_"
     ENGINE_NAME
     ".xml");
