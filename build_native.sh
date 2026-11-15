@@ -24,4 +24,9 @@ PROJ="$(cd "$(dirname "$0")" && pwd)/doom/src/main"
 NDK_PROJECT_PATH="$PROJ" "$NDK_BUILD" \
     NDK_APPLICATION_MK="$PROJ/jni/Application.mk" -j"$(sysctl -n hw.ncpu 2>/dev/null || nproc)" "$@"
 
-echo "Done. .so installed under doom/src/main/libs/{armeabi-v7a,arm64-v8a}/"\n\n# Android ships the prebuilt uzdoom.pk3 from app assets. Keep the edited\n# wadsrc ZScript in sync with that runtime archive before Gradle packages it.\nROOT="$(cd "$(dirname "$0")" && pwd)"\npython3 "$ROOT/tools/patch_uzdoom_pk3.py"
+echo "Done. .so installed under doom/src/main/libs/{armeabi-v7a,arm64-v8a}/"
+
+# Android ships the prebuilt uzdoom.pk3 from app assets. Keep the edited
+# wadsrc ZScript in sync with that runtime archive before Gradle packages it.
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+python3 "$ROOT/tools/patch_uzdoom_pk3.py"
