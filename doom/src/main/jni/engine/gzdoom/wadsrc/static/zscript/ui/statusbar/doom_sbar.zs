@@ -57,32 +57,41 @@ class DoomStatusBar : BaseStatusBar
 
 	protected void DrawMainBar (double TicFrac)
 	{
-		DrawImage("STBAR", (0, 168), DI_ITEM_OFFSETS);
-		DrawImage("STTPRCNT", (90, 171), DI_ITEM_OFFSETS);
-		DrawImage("STTPRCNT", (221, 171), DI_ITEM_OFFSETS);
-		
-		Inventory a1 = GetCurrentAmmo();
-		if (a1 != null) DrawString(mHUDFont, FormatNumber(a1.Amount, 3), (44, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
-		DrawString(mHUDFont, FormatNumber(CPlayer.health, 3), (90, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
-		DrawString(mHUDFont, FormatNumber(GetArmorAmount(), 3), (221, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
+		// Compact modern bottom HUD. Values are read from live player state.
+		Fill(color(238, 8, 12, 18), 0, 168, 320, 32);
+		Fill(color(255, 220, 76, 34), 0, 168, 320, 2);
+		Fill(color(255, 52, 62, 74), 104, 176, 1, 20);
+		Fill(color(255, 52, 62, 74), 210, 176, 1, 20);
 
-		DrawBarKeys();
-		DrawBarAmmo();
-		
+		Inventory a1 = GetCurrentAmmo();
+		int armor = GetArmorAmount();
+		int hpWidth = int(clamp(CPlayer.health, 0, 100) * 0.72);
+		int armorWidth = int(clamp(armor, 0, 200) * 0.36);
+
+		DrawString(mIndexFont, "HEALTH", (12, 178), DI_NOSHADOW, Font.CR_GOLD);
+		DrawString(mHUDFont, FormatNumber(CPlayer.health, 3), (12, 191), DI_NOSHADOW,
+			CPlayer.health < 25 ? Font.CR_RED : (CPlayer.health < 50 ? Font.CR_GOLD : Font.CR_GREEN));
+		Fill(color(255, 42, 48, 56), 12, 196, 72, 2);
+		if (hpWidth > 0) Fill(color(255, 76, 196, 112), 12, 196, hpWidth, 2);
+
+		DrawString(mIndexFont, "ARMOR", (116, 178), DI_NOSHADOW, Font.CR_BLUE);
+		DrawString(mHUDFont, FormatNumber(armor, 3), (116, 191), DI_NOSHADOW,
+			armor < 25 ? Font.CR_RED : Font.CR_BLUE);
+		Fill(color(255, 42, 48, 56), 116, 196, 72, 2);
+		if (armorWidth > 0) Fill(color(255, 72, 164, 232), 116, 196, armorWidth, 2);
+
+		DrawString(mIndexFont, "AMMO", (222, 178), DI_NOSHADOW, Font.CR_GOLD);
+		if (a1 != null)
+			DrawString(mHUDFont, FormatNumber(a1.Amount, 3), (222, 191), DI_NOSHADOW, Font.CR_GOLD);
+		else
+			DrawString(mHUDFont, "---", (222, 191), DI_NOSHADOW, Font.CR_GOLD);
+
 		if (deathmatch || teamplay)
 		{
-			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3), (138, 171), DI_TEXT_ALIGN_RIGHT);
+			DrawString(mIndexFont, "FRAGS", (276, 178), DI_NOSHADOW, Font.CR_GOLD);
+			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 2), (276, 191), DI_NOSHADOW, Font.CR_GOLD);
 		}
-		else
-		{
-			DrawBarWeapons();
-		}
-		
-		if (multiplayer)
-		{
-			DrawImage("STFBANY", (143, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
-		}
-		
+
 		if (CPlayer.mo.InvSel != null && !Level.NoInventoryBar)
 		{
 			DrawInventoryIcon(CPlayer.mo.InvSel, (160, 198), DI_DIMDEPLETED);
@@ -91,17 +100,12 @@ class DoomStatusBar : BaseStatusBar
 				DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (175, 198-mIndexFont.mFont.GetHeight()), DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
 			}
 		}
-		else
-		{
-			DrawTexture(GetMugShot(5), (143, 168), DI_ITEM_OFFSETS);
-		}
 		if (isInventoryBarVisible())
 		{
 			DrawInventoryBar(diparms, (48, 169), 7, DI_ITEM_LEFT_TOP);
 		}
-		
 	}
-	
+
 	protected virtual void DrawBarKeys()
 	{
 		bool locks[6];
