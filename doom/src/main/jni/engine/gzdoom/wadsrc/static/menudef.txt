@@ -11,7 +11,8 @@
 DEFAULTLISTMENU
 {
 	Font "BigFont", "Untranslated"
-	LineSpacing 20
+	// Slightly taller rows improve readability and touch selection on mobile.
+	LineSpacing 22
 	IfGame(Doom)
 	{
 		Selector "M_SKULL1", -32, -5
