@@ -42,6 +42,26 @@ jobs:
       - name: Build Android debug APK
         run: ./gradlew :doom:assembleDebug --no-daemon
 
+      - name: Verify the APK contains the modified HUD
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          from io import BytesIO
+
+          apk_files = list(Path("doom/build/outputs/apk/debug").glob("*.apk"))
+          if not apk_files:
+              raise SystemExit("No debug APK was produced")
+          source = Path("doom/src/main/jni/engine/gzdoom/wadsrc/static/zscript/ui/statusbar/doom_sbar.zs").read_bytes()
+          with ZipFile(apk_files[0]) as apk:
+              bundled_pk3 = apk.read("assets/uzdoom.pk3")
+          with ZipFile(BytesIO(bundled_pk3)) as pk3:
+              packaged = pk3.read("zscript/ui/statusbar/doom_sbar.zs")
+          if packaged != source:
+              raise SystemExit("APK contains a stale Doom HUD script")
+          print(f"Verified modified Doom HUD inside {apk_files[0]}")
+          PY
+
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
