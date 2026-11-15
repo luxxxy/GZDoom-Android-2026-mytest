@@ -1,6 +1,7 @@
 package com.msa.freedoom.ui.launch
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -252,12 +253,15 @@ private fun GameCard(game: WadEntry, selected: Boolean, onClick: () -> Unit) {
     Card(
         onClick = { haptics.performHapticFeedback(HapticFeedbackType.LongPress); onClick() },
         modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        border = if (selected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
+        elevation = CardDefaults.cardElevation(defaultElevation = if (selected) 4.dp else 1.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
