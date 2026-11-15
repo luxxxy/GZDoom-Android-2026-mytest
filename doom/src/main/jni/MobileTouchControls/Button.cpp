@@ -166,9 +166,14 @@ bool Button::drawGL(bool forEditor)
             // Layered sci-fi instrument rings: a fine outer bezel, a broken
             // inner index ring, and four cardinal ticks. Keep the centre clear
             // so the original action glyph remains legible over the game.
+            const bool weaponSlot = tag == "weapon0" || tag == "weapon1" ||
+                tag == "weapon2" || tag == "weapon3" || tag == "weapon4" ||
+                tag == "weapon5" || tag == "weapon6" || tag == "weapon7" ||
+                tag == "weapon8" || tag == "weapon9";
             const bool hudButton = tag == "attack" || tag == "attack2" ||
-                tag == "use" || tag == "jump" || tag == "show_weapons" ||
-                tag == "next_weapon" || tag == "prev_weapon";
+                tag == "use" || tag == "jump" || tag == "map" ||
+                tag == "show_weapons" || tag == "next_weapon" ||
+                tag == "prev_weapon" || weaponSlot;
             if(hudButton)
             {
                 static GLLines hudBezel(32);
@@ -207,6 +212,11 @@ bool Button::drawGL(bool forEditor)
                     gl_color4f(1.0f, 0.34f, 0.16f, drawA * (pressed ? 0.92f : 0.58f));
                 else if(tag == "attack2")
                     gl_color4f(1.0f, 0.66f, 0.28f, drawA * (pressed ? 0.86f : 0.52f));
+                else if(tag == "map")
+                    gl_color4f(0.42f, 0.76f, 0.88f, drawA * (pressed ? 0.84f : 0.48f));
+                else if(weaponSlot || tag == "show_weapons" ||
+                        tag == "next_weapon" || tag == "prev_weapon")
+                    gl_color4f(0.86f, 0.68f, 0.40f, drawA * (pressed ? 0.84f : 0.46f));
                 else
                     gl_color4f(0.48f, 0.78f, 0.88f, drawA * (pressed ? 0.82f : 0.44f));
                 gl_drawLines(cx, cy, hudBezel);
@@ -224,8 +234,10 @@ bool Button::drawGL(bool forEditor)
                 gl_color4f(1.0f, 0.62f, 0.24f, drawA);
             else if(tag == "use" || tag == "jump")
                 gl_color4f(0.35f, 0.88f, 1.0f, drawA);
-            else if(tag == "show_weapons" || tag == "next_weapon" || tag == "prev_weapon")
-                gl_color4f(1.0f, 0.82f, 0.38f, drawA);
+            else if(tag == "show_weapons" || tag == "next_weapon" || tag == "prev_weapon" || weaponSlot)
+                gl_color4f(0.92f, 0.72f, 0.42f, drawA);
+            else if(tag == "map")
+                gl_color4f(0.52f, 0.82f, 0.92f, drawA);
 
             gl_drawRect(glTex[glTexDraw], controlPos.left, controlPos.top, glRect);
             // Avoid leaking per-button tint or alpha into the next control draw.
