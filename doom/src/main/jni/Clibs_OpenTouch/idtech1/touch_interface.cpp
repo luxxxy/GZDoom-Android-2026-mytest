@@ -138,7 +138,10 @@ void TouchInterface::createControls(std::string filesPath)
 
 void TouchInterface::createControlsDoom(std::string filesPath)
 {
-    LOGI("creating controls - Bethesda HUD v8");
+    LOGI("creating controls - Bethesda HUD v9");
+
+    // Keep joystick ownership per finger. Without this, a second touch can
+    // steal the active look/move stick and make aiming stop while firing.\n    touchcontrols::setTouchJoyMultiTouch(true);
 
     tcMenuMain = new touchcontrols::TouchControls("menu", false, true, 10, false);
     tcYesNo = new touchcontrols::TouchControls("yes_no", false, false);
@@ -208,7 +211,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     tcGameMain->addControl(new touchcontrols::Button("attack", touchcontrols::RectF(21.5, 8.5, 25.5, 12.5), "shoot", KEY_SHOOT, false, false, "Attack!"));
     tcGameMain->addControl(new touchcontrols::Button("attack2", touchcontrols::RectF(22, 5.5, 25, 8), "shoot", KEY_SHOOT, false, false, "Secondary fire"));
 
-    tcGameMain->addControl(new touchcontrols::Button("use", touchcontrols::RectF(22, 12.5, 24, 13.3), "use", PORT_ACT_USE, false, false, "Use/Open"));
+    tcGameMain->addControl(new touchcontrols::Button("use", touchcontrols::RectF(23.2, 8.0, 25.2, 10.0), "use", PORT_ACT_USE, false, false, "Use/Open"));
     tcGameMain->addControl(new touchcontrols::Button("quick_save", touchcontrols::RectF(24, 0, 26, 2), "save", PORT_ACT_QUICKSAVE, false, false, "Quick save"));
     tcGameMain->addControl(new touchcontrols::Button("quick_load", touchcontrols::RectF(20, 0, 22, 2), "load", PORT_ACT_QUICKLOAD, false, false, "Quick load"));
     tcGameMain->addControl(new touchcontrols::Button("map", touchcontrols::RectF(2, 0, 4, 2), "map", PORT_ACT_MAP, false, false, "Show map"));
@@ -242,7 +245,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     tcGameMain->addControl(flyQs);
 
 
-    tcGameMain->addControl(new touchcontrols::Button("jump", touchcontrols::RectF(24, 12.5, 26, 13.3), "jump", PORT_ACT_JUMP, false, hideJump, "Jump"));
+    tcGameMain->addControl(new touchcontrols::Button("jump", touchcontrols::RectF(23.2, 5.8, 25.2, 7.8), "jump", PORT_ACT_JUMP, false, hideJump, "Jump"));
     tcGameMain->addControl(new touchcontrols::Button("use_inventory", touchcontrols::RectF(0, 9, 2, 11), "inventory", KEY_SHOW_INV, false, hideInventory, "Show Inventory"));
     tcGameMain->addControl(new touchcontrols::Button("activate_inventory", touchcontrols::RectF(22, 3, 24, 5), "inventory_use_fade", PORT_ACT_INVUSE, false, true, "Use Inventory"));
     tcGameMain->addControl(new touchcontrols::Button("crouch", touchcontrols::RectF(24, 14, 26, 16), "crouch", PORT_ACT_DOWN, false, true, "Crouch"));
@@ -256,9 +259,9 @@ void TouchInterface::createControlsDoom(std::string filesPath)
 
     tcGameMain->addControl(new touchcontrols::Button("show_custom", touchcontrols::RectF(0, 7, 2, 9), "custom_show", KEY_SHOW_CUSTOM, false, true, "Show custom"));
     // Keep weapon controls grouped in a narrow top-centre toolbar.
-    tcGameMain->addControl(new touchcontrols::Button("show_weapons", touchcontrols::RectF(11, 0, 15, 2.5), "show_weapons", KEY_SHOW_WEAPONS, false, false, "Show weapons"));
-    tcGameMain->addControl(new touchcontrols::Button("next_weapon", touchcontrols::RectF(15, 0, 17, 2.5), "next_weap", PORT_ACT_NEXT_WEP, false, false, "Next weapon"));
-    tcGameMain->addControl(new touchcontrols::Button("prev_weapon", touchcontrols::RectF(17, 0, 19, 2.5), "prev_weap", PORT_ACT_PREV_WEP, false, false, "Prev weapon"));
+    tcGameMain->addControl(new touchcontrols::Button("show_weapons", touchcontrols::RectF(11, 0, 13, 2), "show_weapons", KEY_SHOW_WEAPONS, false, false, "Show weapons"));
+    tcGameMain->addControl(new touchcontrols::Button("next_weapon", touchcontrols::RectF(13.2, 0, 15.2, 2), "next_weap", PORT_ACT_NEXT_WEP, false, false, "Next weapon"));
+    tcGameMain->addControl(new touchcontrols::Button("prev_weapon", touchcontrols::RectF(15.4, 0, 17.4, 2), "prev_weap", PORT_ACT_PREV_WEP, false, false, "Prev weapon"));
     tcGameMain->addControl(new touchcontrols::Button("console", touchcontrols::RectF(6, 0, 8, 2), "tild", PORT_ACT_CONSOLE, false, true, "Console"));
     tcGameMain->addControl(new touchcontrols::Button("gyro_toggle", touchcontrols::RectF(17, 3, 19, 5), "gyro", PORT_ACT_GYRO_TOGGLE, false, true, "Gyro Smart Toggle"));
 
@@ -293,15 +296,15 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     //------------------------------------------------------
     // Compact horizontal weapon strip. It appears only when the weapon
     // selector is opened, keeping the normal gameplay view uncluttered.
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon1", touchcontrols::RectF(7, 0.25, 8.2, 2.25), "key_1", 1));
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon2", touchcontrols::RectF(8.2, 0.25, 9.4, 2.25), "key_2", 2));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon1", touchcontrols::RectF(6.25, 0.3, 7.6, 1.65), "key_1", 1));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon2", touchcontrols::RectF(6.25, 0.3, 8.95, 1.65), "key_2", 2));
     tcGameWeapons->addControl(new touchcontrols::Button("weapon3", touchcontrols::RectF(9.4, 0.25, 10.6, 2.25), "key_3", 3));
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon4", touchcontrols::RectF(10.6, 0.25, 11.8, 2.25), "key_4", 4));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon4", touchcontrols::RectF(8.95, 0.3, 11.65, 1.65), "key_4", 4));
     tcGameWeapons->addControl(new touchcontrols::Button("weapon5", touchcontrols::RectF(11.8, 0.25, 13, 2.25), "key_5", 5));
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon6", touchcontrols::RectF(13, 0.25, 14.2, 2.25), "key_6", 6));
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon7", touchcontrols::RectF(14.2, 0.25, 15.4, 2.25), "key_7", 7));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon6", touchcontrols::RectF(11.65, 0.3, 14.35, 1.65), "key_6", 6));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon7", touchcontrols::RectF(13.00, 0.3, 15.70, 1.65), "key_7", 7));
     tcGameWeapons->addControl(new touchcontrols::Button("weapon8", touchcontrols::RectF(15.4, 0.25, 16.6, 2.25), "key_8", 8));
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon9", touchcontrols::RectF(16.6, 0.25, 17.8, 2.25), "key_9", 9));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon9", touchcontrols::RectF(15.70, 0.3, 18.40, 1.65), "key_9", 9));
     tcGameWeapons->addControl(new touchcontrols::Button("weapon0", touchcontrols::RectF(17.8, 0.25, 19, 2.25), "key_0", 0));
 
     tcGameWeapons->signal_button.connect(sigc::mem_fun(this, &TouchInterface::selectWeaponButton));
