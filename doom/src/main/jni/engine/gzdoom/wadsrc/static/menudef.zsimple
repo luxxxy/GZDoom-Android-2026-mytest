@@ -82,6 +82,8 @@ OptionMenu ScalingOptionsSimple protected
 {
 	Title "$SCALEMNU_TITLE"
 	StaticText "$OPTMNU_HUD"
+	// Optional cleaner HUD font. The default stays unchanged for classic Doom styling.
+	Option "Modern HUD font", "generic_ui", "OnOff"
 	ScaleSlider "$HUDMNU_UISCALE",				"uiscale", 0.0, 8.0, 1.0, "$SCALEMNU_ADAPT"
 	Option "$SCALEMNU_HUDASPECT", 				"hud_aspectscale", "OnOff"
 	Slider "$DSPLYMNU_SCREENSIZE",				"screenblocks", 				3.0, 12.0, 1.0, 0
