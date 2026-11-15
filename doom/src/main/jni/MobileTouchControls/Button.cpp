@@ -162,46 +162,6 @@ bool Button::drawGL(bool forEditor)
             if(drawAlpha != 1.0f)
                 gl_color4f(drawR, drawG, drawB, drawA * drawAlpha);
 
-            // Modern HUD treatment for the primary gameplay actions. Keep the
-            // original control textures and hitboxes, but give the important
-            // buttons a dark glass panel and a restrained warm outline.
-            const bool hudAction = (tag == "back" || tag == "attack" || tag == "attack2" ||
-                                    tag == "use" || tag == "show_weapons" ||
-                                    tag == "jump" || tag == "next_weapon" ||
-                                    tag == "prev_weapon");
-            if(hudAction)
-            {
-                GLfloat originalR, originalG, originalB, originalA;
-                gl_getColor(originalR, originalG, originalB, originalA);
-                const float x = controlPos.left;
-                const float y = controlPos.top;
-                const float w = controlPos.right - controlPos.left;
-                const float h = controlPos.bottom - controlPos.top;
-                const float pad = 0.18f;
-                const float edge = 0.07f;
-                GLRect panel;
-                GLRect topEdge, bottomEdge, leftEdge, rightEdge;
-                panel.resize(w + pad * 2.0f, h + pad * 2.0f);
-                gl_drawRect(0.025f, 0.032f, 0.040f, 0.88f * originalA,
-                            x - pad, y - pad, panel);
-
-                // Four fine amber-grey strokes form a consistent HUD frame.
-                topEdge.resize(w + pad * 2.0f, edge);
-                bottomEdge.resize(w + pad * 2.0f, edge);
-                leftEdge.resize(edge, h + pad * 2.0f);
-                rightEdge.resize(edge, h + pad * 2.0f);
-                gl_drawRect(0.98f, 0.62f, 0.22f, 0.95f * originalA,
-                            x - pad, y - pad, topEdge);
-                gl_drawRect(0.98f, 0.62f, 0.22f, 0.95f * originalA,
-                            x - pad, y + h + pad - edge, bottomEdge);
-                gl_drawRect(0.98f, 0.62f, 0.22f, 0.95f * originalA,
-                            x - pad, y - pad, leftEdge);
-                gl_drawRect(0.98f, 0.62f, 0.22f, 0.95f * originalA,
-                            x + w + pad - edge, y - pad, rightEdge);
-                // Restore the owning HUD's tint/opacity before drawing the icon.
-                gl_color4f(originalR, originalG, originalB, originalA);
-            }
-
             gl_drawRect(glTex[glTexDraw], controlPos.left, controlPos.top, glRect);
             // Avoid leaking per-button alpha into the next control draw.
             gl_color4f(drawR, drawG, drawB, drawA);
