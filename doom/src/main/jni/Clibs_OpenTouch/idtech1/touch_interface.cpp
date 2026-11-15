@@ -255,10 +255,10 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     tcGameMain->addControl(runButton); // Common run button created in touch_interface_base
 
     tcGameMain->addControl(new touchcontrols::Button("show_custom", touchcontrols::RectF(0, 7, 2, 9), "custom_show", KEY_SHOW_CUSTOM, false, true, "Show custom"));
-    // Weapon selection sits at the bottom centre, like Bethesda's mobile layout.
-    tcGameMain->addControl(new touchcontrols::Button("show_weapons", touchcontrols::RectF(9, 0, 17, 2), "show_weapons", KEY_SHOW_WEAPONS, false, false, "Show weapons"));
-    tcGameMain->addControl(new touchcontrols::Button("next_weapon", touchcontrols::RectF(3, 0, 5, 2), "next_weap", PORT_ACT_NEXT_WEP, false, false, "Next weapon"));
-    tcGameMain->addControl(new touchcontrols::Button("prev_weapon", touchcontrols::RectF(5, 0, 7, 2), "prev_weap", PORT_ACT_PREV_WEP, false, false, "Prev weapon"));
+    // Keep the weapon selector and cycle buttons together in a compact top strip.
+    tcGameMain->addControl(new touchcontrols::Button("show_weapons", touchcontrols::RectF(11, 0, 15, 2), "show_weapons", KEY_SHOW_WEAPONS, false, false, "Show weapons"));
+    tcGameMain->addControl(new touchcontrols::Button("next_weapon", touchcontrols::RectF(15, 0, 17, 2), "next_weap", PORT_ACT_NEXT_WEP, false, false, "Next weapon"));
+    tcGameMain->addControl(new touchcontrols::Button("prev_weapon", touchcontrols::RectF(17, 0, 19, 2), "prev_weap", PORT_ACT_PREV_WEP, false, false, "Prev weapon"));
     tcGameMain->addControl(new touchcontrols::Button("console", touchcontrols::RectF(6, 0, 8, 2), "tild", PORT_ACT_CONSOLE, false, true, "Console"));
     tcGameMain->addControl(new touchcontrols::Button("gyro_toggle", touchcontrols::RectF(17, 3, 19, 5), "gyro", PORT_ACT_GYRO_TOGGLE, false, true, "Gyro Smart Toggle"));
 
