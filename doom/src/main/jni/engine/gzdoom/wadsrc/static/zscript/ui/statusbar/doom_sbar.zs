@@ -176,53 +176,76 @@ class DoomStatusBar : BaseStatusBar
 
 	protected void DrawFullScreenStuff ()
 	{
-		Vector2 iconbox = (40, 20);
-		// Draw health
-		let berserk = CPlayer.mo.FindInventory("PowerStrength");
-		DrawImage(berserk? "PSTRA0" : "MEDIA0", (20, -2));
-		DrawString(mHUDFont, FormatNumber(CPlayer.health, 3), (44, -20));
-		
-		let armor = CPlayer.mo.FindInventory("BasicArmor", true);
-		if (armor != null && armor.Amount > 0)
-		{
-			DrawInventoryIcon(armor, (20, -22));
-			DrawString(mHUDFont, FormatNumber(armor.Amount, 3), (44, -40));
-		}
-		Inventory ammotype1, ammotype2;
-		[ammotype1, ammotype2] = GetCurrentAmmo();
-		int invY = -20;
-		if (ammotype1 != null)
-		{
-			DrawInventoryIcon(ammotype1, (-14, -4));
-			DrawString(mHUDFont, FormatNumber(ammotype1.Amount, 3), (-30, -20), DI_TEXT_ALIGN_RIGHT);
-			invY -= 20;
-		}
-		if (ammotype2 != null && ammotype2 != ammotype1)
-		{
-			DrawInventoryIcon(ammotype2, (-14, invY + 17));
-			DrawString(mHUDFont, FormatNumber(ammotype2.Amount, 3), (-30, invY), DI_TEXT_ALIGN_RIGHT);
-			invY -= 20;
-		}
-		if (!isInventoryBarVisible() && !Level.NoInventoryBar && CPlayer.mo.InvSel != null)
-		{
-			DrawInventoryIcon(CPlayer.mo.InvSel, (-14, invY + 17), DI_DIMDEPLETED);
-			DrawString(mHUDFont, FormatNumber(CPlayer.mo.InvSel.Amount, 3), (-30, invY), DI_TEXT_ALIGN_RIGHT);
-		}
+		DrawCompactFullscreenBar();
 		if (deathmatch)
 		{
-			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3), (-3, 1), DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
+			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3),
+				(HorizontalResolution * 0.92, -9), DI_SCREEN_LEFT_BOTTOM|DI_NOSHADOW, Font.CR_GOLD);
 		}
 		else
 		{
 			DrawFullscreenKeys();
 		}
-		
+
 		if (isInventoryBarVisible())
 		{
 			DrawInventoryBar(diparms, (0, 0), 7, DI_SCREEN_CENTER_BOTTOM, HX_SHADOW);
 		}
 	}
-	
+
+	// Fullscreen games hide the classic status bar, so draw the same live
+	// information as a screen-edge anchored overlay instead.
+	protected void DrawCompactFullscreenBar()
+	{
+		double width = HorizontalResolution;
+		double healthX = width * 0.04;
+		double armorX = width * 0.28;
+		double weaponX = width * 0.52;
+		double ammoX = width * 0.72;
+		double meterWidth = width * 0.18;
+		int armor = GetArmorAmount();
+		Inventory a1 = GetCurrentAmmo();
+		int hpWidth = int(clamp(CPlayer.health, 0, 100) * meterWidth / 100);
+		int armorWidth = int(clamp(armor, 0, 200) * meterWidth / 200);
+		int anchor = DI_SCREEN_LEFT_BOTTOM;
+
+		Fill(color(238, 8, 12, 18), 0, -32, width, 32, anchor);
+		Fill(color(255, 220, 76, 34), 0, -32, width, 2, anchor);
+		Fill(color(255, 52, 62, 74), width * 0.25, -25, 1, 19, anchor);
+		Fill(color(255, 52, 62, 74), width * 0.49, -25, 1, 19, anchor);
+		Fill(color(255, 52, 62, 74), width * 0.69, -25, 1, 19, anchor);
+
+		DrawString(mIndexFont, "HEALTH", (healthX, -22), anchor|DI_NOSHADOW, Font.CR_GOLD);
+		DrawString(mHUDFont, FormatNumber(CPlayer.health, 3), (healthX, -9),
+			anchor|DI_NOSHADOW, CPlayer.health < 25 ? Font.CR_RED : (CPlayer.health < 50 ? Font.CR_GOLD : Font.CR_GREEN));
+		Fill(color(255, 42, 48, 56), healthX, -4, meterWidth, 2, anchor);
+		if (hpWidth > 0) Fill(color(255, 76, 196, 112), healthX, -4, hpWidth, 2, anchor);
+
+		DrawString(mIndexFont, "ARMOR", (armorX, -22), anchor|DI_NOSHADOW, Font.CR_BLUE);
+		DrawString(mHUDFont, FormatNumber(armor, 3), (armorX, -9),
+			anchor|DI_NOSHADOW, armor < 25 ? Font.CR_RED : Font.CR_BLUE);
+		Fill(color(255, 42, 48, 56), armorX, -4, meterWidth, 2, anchor);
+		if (armorWidth > 0) Fill(color(255, 72, 164, 232), armorX, -4, armorWidth, 2, anchor);
+
+		DrawString(mIndexFont, "WEAPON", (weaponX, -22), anchor|DI_NOSHADOW, Font.CR_GOLD);
+		if (CPlayer.ReadyWeapon != null)
+		{
+			DrawInventoryIcon(CPlayer.ReadyWeapon, (weaponX + width * 0.055, -8),
+				anchor|DI_DIMDEPLETED, 1.0, (24, 18));
+		}
+
+		DrawString(mIndexFont, "AMMO", (ammoX, -22), anchor|DI_NOSHADOW, Font.CR_GOLD);
+		if (a1 != null)
+		{
+			DrawString(mHUDFont, FormatNumber(a1.Amount, 3), (ammoX, -9), anchor|DI_NOSHADOW, Font.CR_GOLD);
+			DrawInventoryIcon(a1, (ammoX + width * 0.075, -8), anchor|DI_DIMDEPLETED, 1.0, (16, 16));
+		}
+		else
+		{
+			DrawString(mHUDFont, "---", (ammoX, -9), anchor|DI_NOSHADOW, Font.CR_GOLD);
+		}
+	}
+
 	protected virtual void DrawFullscreenKeys()
 	{
 		// Draw the keys. This does not use a special draw function like SBARINFO because the specifics will be different for each mod
