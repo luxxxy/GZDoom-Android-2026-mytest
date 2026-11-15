@@ -138,7 +138,7 @@ void TouchInterface::createControls(std::string filesPath)
 
 void TouchInterface::createControlsDoom(std::string filesPath)
 {
-    LOGI("creating controls - Bethesda HUD v7");
+    LOGI("creating controls - Bethesda HUD v8");
 
     tcMenuMain = new touchcontrols::TouchControls("menu", false, true, 10, false);
     tcYesNo = new touchcontrols::TouchControls("yes_no", false, false);
@@ -274,7 +274,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     touchJoyRight->signal_double_tap.connect(sigc::mem_fun(this, &TouchInterface::rightDoubleTap));
 
     touchJoyLeft = new touchcontrols::TouchJoy("stick", touchcontrols::RectF(0.5, 4.5, 8, 12.5), "strafe_arrow", "");
-    // Keep a visible anchored movement pad so the left thumb has a clear home zone.
+    // The centered thumb marker provides a stable reference; touch input is accepted across the full left zone.
     touchJoyLeft->setCenterAnchor(true);
     tcGameMain->addControl(touchJoyLeft);
     touchJoyLeft->signal_move.connect(sigc::mem_fun(this, &TouchInterface::leftStick));
@@ -490,7 +490,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     // Versioned profile bypasses old saved coordinates that override defaults.
     tcGameMain->setXMLFile((std::string) filesPath + "/game_"
     ENGINE_NAME
-    "_bethesda_v7.xml");
+    "_bethesda_v8.xml");
     tcInventory->setXMLFile((std::string) filesPath + "/inventory_"
     ENGINE_NAME
     ".xml");
@@ -499,7 +499,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     ".xml");
     tcGameWeapons->setXMLFile((std::string) filesPath + "/weapons_"
     ENGINE_NAME
-    "_bethesda_v7.xml");
+    "_bethesda_v8.xml");
     tcCustomButtons->setXMLFile((std::string) filesPath + "/custom_buttons_0_"
     ENGINE_NAME
     ".xml");
