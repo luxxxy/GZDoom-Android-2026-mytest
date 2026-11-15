@@ -25,7 +25,10 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         debug {
-            // signingConfig = signingConfigs.getByName("release")
+            // Keep the redesign build installable alongside the user's existing
+            // Codespaces-signed app; this avoids forcing an uninstall or data loss.
+            applicationIdSuffix = ".hudtest"
+            versionNameSuffix = "-HUD Test"
         }
     }
 
