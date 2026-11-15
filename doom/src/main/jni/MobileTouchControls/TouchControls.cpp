@@ -761,6 +761,7 @@ void TouchControls::initGL()
 void TouchControls::setXMLFile(std::string file)
 {
     xmlFilename = file + xlmAppend;
+    LOGTOUCH("Touch HUD profile: %s", xmlFilename.c_str());
     saveXML(xmlFilename + ".default"); //Save incase we want to reset positions
     loadXML(xmlFilename);
 }
@@ -794,8 +795,13 @@ void TouchControls::loadXML(std::string filename)
     //TiXmlDocument doc(filename.c_str());
     TiXmlDocument *doc = new TiXmlDocument(filename.c_str());
 
-    if(!doc->LoadFile()) return;
+    if(!doc->LoadFile())
+    {
+        LOGTOUCH("No saved touch layout found at: %s", filename.c_str());
+        return;
+    }
 
+    LOGTOUCH("Loaded saved touch layout: %s", filename.c_str());
     for(int n = 0; n < controls.size(); n++) //draw
     {
         ControlSuper *c = controls.at(n);
