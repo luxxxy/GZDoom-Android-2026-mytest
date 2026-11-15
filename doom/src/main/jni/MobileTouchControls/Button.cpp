@@ -19,6 +19,7 @@ Button::Button(std::string tag, RectF pos, std::string image_filename, int value
     description = description_;
     glTex[0] = -1;
     glTex[1] = -1;
+    glTexBackdrop = -1;
     id = -1;
     repeat = repeat_;
     hidden = hidden_;
@@ -35,6 +36,7 @@ Button::Button(std::string tag, RectF pos, std::string image_filename, int value
 void Button::updateSize()
 {
     glRect.resize(controlPos.right - controlPos.left, controlPos.bottom - controlPos.top);
+    glBackdropRect.resize(glRect.width * 1.18f, glRect.height * 1.18f);
 }
 
 void Button::setFlash(bool v)
@@ -116,6 +118,12 @@ bool Button::initGL()
 
     int x, y;
 
+    // Use the existing circular joystick-well texture as a soft, rounded
+    // backing only for the main action cluster. No rectangular cell panels.
+    if(tag == "attack" || tag == "attack2" || tag == "use" || tag == "jump" ||
+       tag == "show_weapons" || tag == "next_weapon" || tag == "prev_weapon")
+        glTexBackdrop = loadTextureFromPNG("fixed_stick_circle", x, y);
+
     if(images.size() > 0)
     {
         glTex[0] = loadTextureFromPNG(images[0], x, y);
@@ -162,7 +170,14 @@ bool Button::drawGL(bool forEditor)
             if(drawAlpha != 1.0f)
                 gl_color4f(drawR, drawG, drawB, drawA * drawAlpha);
 
-            gl_drawRect(glTex[glTexDraw], controlPos.left, controlPos.top, glRect);
+            if(glTexBackdrop != -1)
+                {
+                    const float bx = controlPos.left - (glBackdropRect.width - glRect.width) / 2.0f;
+                    const float by = controlPos.top - (glBackdropRect.height - glRect.height) / 2.0f;
+                    gl_drawRect(glTexBackdrop, bx, by, glBackdropRect);
+                }
+
+                gl_drawRect(glTex[glTexDraw], controlPos.left, controlPos.top, glRect);
             // Avoid leaking per-button alpha into the next control draw.
             gl_color4f(drawR, drawG, drawB, drawA);
         }
