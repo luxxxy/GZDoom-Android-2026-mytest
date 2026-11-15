@@ -231,8 +231,10 @@ bool TouchJoy::drawGL(bool forEditor)
             }
 
             bgRect.resize(width, height);
-            // Draw the translucent joystick well, then its thumb cap.
-            gl_drawRect(glTexBackground, controlPos.left + (controlPos.width() - width) / 2, controlPos.top + (controlPos.height() - height) / 2, bgRect);
+            // Draw a well only when a real texture is configured. Empty
+            // background names are intentional for the clean, icon-only HUD.
+            if(glTexBackground != -1)
+                gl_drawRect(glTexBackground, controlPos.left + (controlPos.width() - width) / 2, controlPos.top + (controlPos.height() - height) / 2, bgRect);
 
             const float knobX = (pid != -1 ? fingerPos.x : controlPos.left + controlPos.width() / 2);
             const float knobY = (pid != -1 ? fingerPos.y : controlPos.top + controlPos.height() / 2);
