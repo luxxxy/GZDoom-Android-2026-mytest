@@ -19,6 +19,10 @@ namespace touchcontrols
         // Two possible images to draw
         GLuint glTex[2];
 
+        // Circular glass-like backing for primary gameplay touch actions.
+        GLuint glTexBackdrop;
+        GLRect glBackdropRect;
+
         // glText above to draw
         int32_t glTexDraw = 0;
 
