@@ -57,6 +57,8 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
 import kotlinx.coroutines.launch
 import com.msa.freedoom.R
 import com.msa.freedoom.ui.DoomIcons
@@ -226,18 +228,28 @@ private fun CompactLayout(
 
 @Composable
 private fun GameListHeader(state: LaunchState) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
-            stringResource(R.string.select_game_header),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.tertiary,
+            "UZDOOM",
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Black,
+                letterSpacing = 2.sp,
+            ),
+            color = MaterialTheme.colorScheme.primary,
         )
-        Spacer(Modifier.weight(1f))
-        TextButton(
-            onClick = { state.clearSelection() },
-            enabled = state.selectedGame != null || state.selectedMods.isNotEmpty(),
-        ) {
-            Text(stringResource(R.string.reset_button_text))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                stringResource(R.string.select_game_header),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.tertiary,
+            )
+            Spacer(Modifier.weight(1f))
+            TextButton(
+                onClick = { state.clearSelection() },
+                enabled = state.selectedGame != null || state.selectedMods.isNotEmpty(),
+            ) {
+                Text(stringResource(R.string.reset_button_text))
+            }
         }
     }
 }
