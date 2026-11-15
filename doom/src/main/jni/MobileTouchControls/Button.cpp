@@ -161,21 +161,57 @@ bool Button::drawGL(bool forEditor)
             // preserving the RGB. 1.0 (default) leaves it untouched.
             GLfloat drawR = 1.0f, drawG = 1.0f, drawB = 1.0f, drawA = 1.0f;
             gl_getColor(drawR, drawG, drawB, drawA);
+
+            // Give the important gameplay controls a restrained circular HUD
+            // outline. Unlike a stretched panel, this remains round at every
+            // control size and keeps the icon itself unobstructed.
+            const bool hudButton = tag == "attack" || tag == "attack2" ||
+                tag == "use" || tag == "jump" || tag == "show_weapons" ||
+                tag == "next_weapon" || tag == "prev_weapon";
+            if(hudButton)
+            {
+                static GLLines hudRing(24);
+                const float radius = (glRect.width < glRect.height ? glRect.width : glRect.height) * 0.49f;
+                const float cx = controlPos.left + glRect.width * 0.5f;
+                const float cy = controlPos.top + glRect.height * 0.5f;
+                const float tau = 6.28318530718f;
+                for(int n = 0; n < 24; ++n)
+                {
+                    const float a0 = tau * (float)n / 24.0f;
+                    const float a1 = tau * (float)(n + 1) / 24.0f;
+                    const int v = n * 6;
+                    hudRing.vertices[v + 0] = cosf(a0) * radius;
+                    hudRing.vertices[v + 1] = sinf(a0) * radius;
+                    hudRing.vertices[v + 2] = 0.0f;
+                    hudRing.vertices[v + 3] = cosf(a1) * radius;
+                    hudRing.vertices[v + 4] = sinf(a1) * radius;
+                    hudRing.vertices[v + 5] = 0.0f;
+                }
+                if(tag == "attack")
+                    gl_color4f(1.0f, 0.30f, 0.12f, drawA * 0.55f);
+                else if(tag == "attack2")
+                    gl_color4f(1.0f, 0.58f, 0.20f, drawA * 0.50f);
+                else
+                    gl_color4f(0.30f, 0.78f, 1.0f, drawA * 0.42f);
+                gl_drawLines(cx, cy, hudRing);
+                gl_color4f(drawR, drawG, drawB, drawA);
+            }
+
             if(drawAlpha != 1.0f)
                 gl_color4f(drawR, drawG, drawB, drawA * drawAlpha);
 
-                // Warm fire controls and cool utility controls read clearly
-                // against the game without opaque square panels.
-                if(tag == "attack")
-                    gl_color4f(1.0f, 0.38f, 0.18f, drawA);
-                else if(tag == "attack2")
-                    gl_color4f(1.0f, 0.62f, 0.24f, drawA);
-                else if(tag == "use")
-                    gl_color4f(0.35f, 0.88f, 1.0f, drawA);
-                else if(tag == "show_weapons" || tag == "next_weapon" || tag == "prev_weapon")
-                    gl_color4f(1.0f, 0.82f, 0.38f, drawA);
+            // Warm fire controls and cool utility controls read clearly
+            // against the game without opaque square panels.
+            if(tag == "attack")
+                gl_color4f(1.0f, 0.38f, 0.18f, drawA);
+            else if(tag == "attack2")
+                gl_color4f(1.0f, 0.62f, 0.24f, drawA);
+            else if(tag == "use" || tag == "jump")
+                gl_color4f(0.35f, 0.88f, 1.0f, drawA);
+            else if(tag == "show_weapons" || tag == "next_weapon" || tag == "prev_weapon")
+                gl_color4f(1.0f, 0.82f, 0.38f, drawA);
 
-                gl_drawRect(glTex[glTexDraw], controlPos.left, controlPos.top, glRect);
+            gl_drawRect(glTex[glTexDraw], controlPos.left, controlPos.top, glRect);
             // Avoid leaking per-button tint or alpha into the next control draw.
             gl_color4f(drawR, drawG, drawB, drawA);
         }
