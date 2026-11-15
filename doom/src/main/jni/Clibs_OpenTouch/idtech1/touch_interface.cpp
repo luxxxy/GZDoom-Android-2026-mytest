@@ -499,7 +499,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     ".xml");
     tcGameWeapons->setXMLFile((std::string) filesPath + "/weapons_"
     ENGINE_NAME
-    ".xml");
+    "_bethesda_v5.xml");
     tcCustomButtons->setXMLFile((std::string) filesPath + "/custom_buttons_0_"
     ENGINE_NAME
     ".xml");
