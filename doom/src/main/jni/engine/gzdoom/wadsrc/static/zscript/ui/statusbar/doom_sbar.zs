@@ -63,7 +63,9 @@ class DoomStatusBar : BaseStatusBar
 		Fill(color(255, 52, 62, 74), 104, 176, 1, 20);
 		Fill(color(255, 52, 62, 74), 210, 176, 1, 20);
 
-		Inventory a1 = GetCurrentAmmo();
+		Ammo a1, a2;
+		int ammoCount1, ammoCount2;
+		[a1, a2, ammoCount1, ammoCount2] = GetCurrentAmmo();
 		int armor = GetArmorAmount();
 		int hpWidth = int(clamp(CPlayer.health, 0, 100) * 0.72);
 		int armorWidth = int(clamp(armor, 0, 200) * 0.36);
@@ -91,7 +93,7 @@ class DoomStatusBar : BaseStatusBar
 		DrawString(mIndexFont, "AMMO", (222, 178), DI_NOSHADOW, Font.CR_GOLD);
 		if (a1 != null)
 		{
-			DrawString(mHUDFont, FormatNumber(a1.Amount, 3), (222, 191), DI_NOSHADOW, Font.CR_GOLD);
+			DrawString(mHUDFont, FormatNumber(ammoCount1, 3), (222, 191), DI_NOSHADOW, Font.CR_GOLD);
 			DrawInventoryIcon(a1, (252, 191), DI_DIMDEPLETED, 1.0, (16, 16));
 		}
 		else
@@ -204,7 +206,9 @@ class DoomStatusBar : BaseStatusBar
 		double ammoX = width * 0.72;
 		double meterWidth = width * 0.18;
 		int armor = GetArmorAmount();
-		Inventory a1 = GetCurrentAmmo();
+		Ammo a1, a2;
+		int ammoCount1, ammoCount2;
+		[a1, a2, ammoCount1, ammoCount2] = GetCurrentAmmo();
 		int hpWidth = int(clamp(CPlayer.health, 0, 100) * meterWidth / 100);
 		int armorWidth = int(clamp(armor, 0, 200) * meterWidth / 200);
 		int anchor = DI_SCREEN_LEFT_BOTTOM;
@@ -237,7 +241,7 @@ class DoomStatusBar : BaseStatusBar
 		DrawString(mIndexFont, "AMMO", (ammoX, -22), anchor|DI_NOSHADOW, Font.CR_GOLD);
 		if (a1 != null)
 		{
-			DrawString(mHUDFont, FormatNumber(a1.Amount, 3), (ammoX, -9), anchor|DI_NOSHADOW, Font.CR_GOLD);
+			DrawString(mHUDFont, FormatNumber(ammoCount1, 3), (ammoX, -9), anchor|DI_NOSHADOW, Font.CR_GOLD);
 			DrawInventoryIcon(a1, (ammoX + width * 0.075, -8), anchor|DI_DIMDEPLETED, 1.0, (16, 16));
 		}
 		else
