@@ -118,12 +118,6 @@ bool Button::initGL()
 
     int x, y;
 
-    // Use the existing circular joystick-well texture as a soft, rounded
-    // backing only for the main action cluster. No rectangular cell panels.
-    if(tag == "attack" || tag == "attack2" || tag == "use" || tag == "jump" ||
-       tag == "show_weapons" || tag == "next_weapon" || tag == "prev_weapon")
-        glTexBackdrop = loadTextureFromPNG("fixed_stick_circle", x, y);
-
     if(images.size() > 0)
     {
         glTex[0] = loadTextureFromPNG(images[0], x, y);
@@ -169,13 +163,6 @@ bool Button::drawGL(bool forEditor)
             gl_getColor(drawR, drawG, drawB, drawA);
             if(drawAlpha != 1.0f)
                 gl_color4f(drawR, drawG, drawB, drawA * drawAlpha);
-
-            if(glTexBackdrop != -1)
-                {
-                    const float bx = controlPos.left - (glBackdropRect.width - glRect.width) / 2.0f;
-                    const float by = controlPos.top - (glBackdropRect.height - glRect.height) / 2.0f;
-                    gl_drawRect(glTexBackdrop, bx, by, glBackdropRect);
-                }
 
                 // Warm fire controls and cool utility controls read clearly
                 // against the game without opaque square panels.
