@@ -194,11 +194,11 @@ bool Button::drawGL(bool forEditor)
                 rightEdge.resize(edge, h + pad * 2.0f);
                 gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f * originalA,
                             x - pad, y - pad, topEdge);
-                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f,
+                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f * originalA,
                             x - pad, y + h + pad - edge, bottomEdge);
-                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f,
+                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f * originalA,
                             x - pad, y - pad, leftEdge);
-                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f,
+                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f * originalA,
                             x + w + pad - edge, y - pad, rightEdge);
                 // Restore the owning HUD's tint/opacity before drawing the icon.
                 gl_color4f(originalR, originalG, originalB, originalA);
