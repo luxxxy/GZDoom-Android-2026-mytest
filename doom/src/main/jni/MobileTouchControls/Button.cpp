@@ -167,12 +167,14 @@ bool Button::drawGL(bool forEditor)
             // Modern HUD treatment for the primary gameplay actions. Keep the
             // original control textures and hitboxes, but give the important
             // buttons a dark glass panel and a restrained warm outline.
-            const bool hudAction = (tag == "attack" || tag == "attack2" ||
+            const bool hudAction = (tag == "back" || tag == "attack" || tag == "attack2" ||
                                     tag == "use" || tag == "show_weapons" ||
                                     tag == "jump" || tag == "next_weapon" ||
                                     tag == "prev_weapon");
             if(hudAction)
             {
+                GLfloat originalR, originalG, originalB, originalA;
+                gl_getColor(originalR, originalG, originalB, originalA);
                 const float x = controlPos.left;
                 const float y = controlPos.top;
                 const float w = controlPos.right - controlPos.left;
@@ -198,6 +200,8 @@ bool Button::drawGL(bool forEditor)
                             x - pad, y - pad, leftEdge);
                 gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f,
                             x + w + pad - edge, y - pad, rightEdge);
+                // Restore the owning HUD's tint/opacity before drawing the icon.
+                gl_color4f(originalR, originalG, originalB, originalA);
             }
 
             gl_drawRect(glTex[glTexDraw], controlPos.left, controlPos.top, glRect);
