@@ -164,6 +164,42 @@ bool Button::drawGL(bool forEditor)
                 gl_color4f(r, g, b, a * drawAlpha);
             }
 
+            // Modern HUD treatment for the primary gameplay actions. Keep the
+            // original control textures and hitboxes, but give the important
+            // buttons a dark glass panel and a restrained warm outline.
+            const bool hudAction = (tag == "attack" || tag == "attack2" ||
+                                    tag == "use" || tag == "show_weapons" ||
+                                    tag == "jump" || tag == "next_weapon" ||
+                                    tag == "prev_weapon");
+            if(hudAction)
+            {
+                const float x = controlPos.left;
+                const float y = controlPos.top;
+                const float w = controlPos.right - controlPos.left;
+                const float h = controlPos.bottom - controlPos.top;
+                const float pad = 0.12f;
+                const float edge = 0.045f;
+                GLRect panel;
+                GLRect topEdge, bottomEdge, leftEdge, rightEdge;
+                panel.resize(w + pad * 2.0f, h + pad * 2.0f);
+                gl_drawRect(0.035f, 0.045f, 0.055f, 0.72f,
+                            x - pad, y - pad, panel);
+
+                // Four fine amber-grey strokes form a consistent HUD frame.
+                topEdge.resize(w + pad * 2.0f, edge);
+                bottomEdge.resize(w + pad * 2.0f, edge);
+                leftEdge.resize(edge, h + pad * 2.0f);
+                rightEdge.resize(edge, h + pad * 2.0f);
+                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f,
+                            x - pad, y - pad, topEdge);
+                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f,
+                            x - pad, y + h + pad - edge, bottomEdge);
+                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f,
+                            x - pad, y - pad, leftEdge);
+                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f,
+                            x + w + pad - edge, y - pad, rightEdge);
+            }
+
             gl_drawRect(glTex[glTexDraw], controlPos.left, controlPos.top, glRect);
         }
     }
