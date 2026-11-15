@@ -191,7 +191,8 @@ class DoomStatusBar : BaseStatusBar
 
 		if (isInventoryBarVisible())
 		{
-			DrawInventoryBar(diparms, (0, 0), 7, DI_SCREEN_CENTER_BOTTOM, HX_SHADOW);
+			// Keep the inventory selector above the custom bottom HUD strip.
+			DrawInventoryBar(diparms, (0, -36), 7, DI_SCREEN_CENTER_BOTTOM, HX_SHADOW);
 		}
 	}
 
