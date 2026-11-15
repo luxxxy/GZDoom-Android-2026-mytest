@@ -184,7 +184,7 @@ bool Button::drawGL(bool forEditor)
                 GLRect panel;
                 GLRect topEdge, bottomEdge, leftEdge, rightEdge;
                 panel.resize(w + pad * 2.0f, h + pad * 2.0f);
-                gl_drawRect(0.035f, 0.045f, 0.055f, 0.72f,
+                gl_drawRect(0.035f, 0.045f, 0.055f, 0.72f * originalA,
                             x - pad, y - pad, panel);
 
                 // Four fine amber-grey strokes form a consistent HUD frame.
@@ -192,7 +192,7 @@ bool Button::drawGL(bool forEditor)
                 bottomEdge.resize(w + pad * 2.0f, edge);
                 leftEdge.resize(edge, h + pad * 2.0f);
                 rightEdge.resize(edge, h + pad * 2.0f);
-                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f,
+                gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f * originalA,
                             x - pad, y - pad, topEdge);
                 gl_drawRect(0.72f, 0.53f, 0.28f, 0.72f,
                             x - pad, y + h + pad - edge, bottomEdge);
