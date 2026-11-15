@@ -204,11 +204,11 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     // Bethesda-inspired landscape HUD: a large primary trigger in the right
     // thumb zone, a compact secondary trigger above it, and Use near the
     // lower centre. Existing bindings are preserved.
-    tcGameMain->addControl(new touchcontrols::Button("attack", touchcontrols::RectF(21, 8.5, 25, 13), "shoot", KEY_SHOOT, false, false, "Attack!"));
-    tcGameMain->addControl(new touchcontrols::Button("attack2", touchcontrols::RectF(17, 4.5, 20, 7.5), "shoot", KEY_SHOOT, false, false, "Secondary fire"));
+    tcGameMain->addControl(new touchcontrols::Button("attack", touchcontrols::RectF(21, 9, 25, 13), "shoot", KEY_SHOOT, false, false, "Attack!"));
+    tcGameMain->addControl(new touchcontrols::Button("attack2", touchcontrols::RectF(21, 5, 24, 8), "shoot", KEY_SHOOT, false, false, "Secondary fire"));
 
     // Keep Use central and low, clear of both thumb movement zones.
-    tcGameMain->addControl(new touchcontrols::Button("use", touchcontrols::RectF(11.5, 12, 14.5, 15), "use", PORT_ACT_USE, false, false, "Use/Open"));
+    tcGameMain->addControl(new touchcontrols::Button("use", touchcontrols::RectF(21, 13.5, 24, 16), "use", PORT_ACT_USE, false, false, "Use/Open"));
     tcGameMain->addControl(new touchcontrols::Button("quick_save", touchcontrols::RectF(24, 0, 26, 2), "save", PORT_ACT_QUICKSAVE, false, false, "Quick save"));
     tcGameMain->addControl(new touchcontrols::Button("quick_load", touchcontrols::RectF(20, 0, 22, 2), "load", PORT_ACT_QUICKLOAD, false, false, "Quick load"));
     tcGameMain->addControl(new touchcontrols::Button("map", touchcontrols::RectF(2, 0, 4, 2), "map", PORT_ACT_MAP, false, false, "Show map"));
@@ -270,7 +270,9 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     dpad->addCell(1, 1, "direction_down", PORT_ACT_BACK);
     tcGameMain->addControl(dpad);
 
-    touchJoyRight = new touchcontrols::TouchJoy("touch", touchcontrols::RectF(17, 4, 26, 16), "look_arrow", "fixed_stick_circle");
+    touchJoyRight = new touchcontrols::TouchJoy("touch", touchcontrols::RectF(14, 4, 20.5, 16), "look_arrow", "fixed_stick_circle");
+    // Fixed right thumb zone for predictable camera aiming.
+    touchJoyRight->setCenterAnchor(true);
     tcGameMain->addControl(touchJoyRight);
     touchJoyRight->signal_move.connect(sigc::mem_fun(this, &TouchInterface::rightStick));
     touchJoyRight->signal_double_tap.connect(sigc::mem_fun(this, &TouchInterface::rightDoubleTap));
