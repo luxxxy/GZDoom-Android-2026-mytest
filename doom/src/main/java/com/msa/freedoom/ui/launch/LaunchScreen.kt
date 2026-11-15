@@ -149,6 +149,8 @@ private fun WideLayout(
         horizontalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         Column(Modifier.weight(0.5f)) {
+            LauncherHero()
+            Spacer(Modifier.height(18.dp))
             GameListHeader(state)
             Spacer(Modifier.height(4.dp))
             if (state.games.isEmpty()) {
@@ -184,8 +186,10 @@ private fun CompactLayout(
             .padding(16.dp)
             .imePadding(),
     ) {
+        LauncherHero()
+        Spacer(Modifier.height(18.dp))
         GameListHeader(state)
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(8.dp))
 
         if (state.games.isEmpty()) {
             Box(Modifier.weight(1f)) {
@@ -225,6 +229,57 @@ private fun CompactLayout(
 // ---------------------------------------------------------------------------
 // Shared pieces
 // ---------------------------------------------------------------------------
+
+@Composable
+private fun LauncherHero() {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.extraLarge,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 22.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                DoomIcons.Gamepad,
+                contentDescription = null,
+                modifier = Modifier.size(46.dp),
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+            Spacer(Modifier.size(16.dp))
+            Column {
+                Text(
+                    "UZDOOM",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Black,
+                        letterSpacing = 1.5.sp,
+                    ),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Text(
+                    "ANDROID EDITION  •  CLASSIC FPS",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp,
+                    ),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Spacer(Modifier.height(5.dp))
+                Text(
+                    "Choose a game and jump in.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
+        }
+    }
+}
 
 @Composable
 private fun GameListHeader(state: LaunchState) {
