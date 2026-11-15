@@ -138,7 +138,7 @@ void TouchInterface::createControls(std::string filesPath)
 
 void TouchInterface::createControlsDoom(std::string filesPath)
 {
-    LOGI("creating controls - Bethesda HUD v5");
+    LOGI("creating controls - Bethesda HUD v6");
 
     tcMenuMain = new touchcontrols::TouchControls("menu", false, true, 10, false);
     tcYesNo = new touchcontrols::TouchControls("yes_no", false, false);
@@ -205,10 +205,10 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     // and a compact action cluster at the far right. The primary trigger is
     // deliberately the largest button; secondary fire and Use sit above and
     // below it with clear gaps. All original bindings are preserved.
-    tcGameMain->addControl(new touchcontrols::Button("attack", touchcontrols::RectF(22, 10, 25.5, 14), "shoot", KEY_SHOOT, false, false, "Attack!"));
-    tcGameMain->addControl(new touchcontrols::Button("attack2", touchcontrols::RectF(22.5, 6.5, 25.5, 9.5), "shoot", KEY_SHOOT, false, false, "Secondary fire"));
+    tcGameMain->addControl(new touchcontrols::Button("attack", touchcontrols::RectF(21.5, 8.5, 25.5, 12.5), "shoot", KEY_SHOOT, false, false, "Attack!"));
+    tcGameMain->addControl(new touchcontrols::Button("attack2", touchcontrols::RectF(22, 5.5, 25, 8), "shoot", KEY_SHOOT, false, false, "Secondary fire"));
 
-    tcGameMain->addControl(new touchcontrols::Button("use", touchcontrols::RectF(22, 14, 25, 16), "use", PORT_ACT_USE, false, false, "Use/Open"));
+    tcGameMain->addControl(new touchcontrols::Button("use", touchcontrols::RectF(22, 12.5, 25, 14.3), "use", PORT_ACT_USE, false, false, "Use/Open"));
     tcGameMain->addControl(new touchcontrols::Button("quick_save", touchcontrols::RectF(24, 0, 26, 2), "save", PORT_ACT_QUICKSAVE, false, false, "Quick save"));
     tcGameMain->addControl(new touchcontrols::Button("quick_load", touchcontrols::RectF(20, 0, 22, 2), "load", PORT_ACT_QUICKLOAD, false, false, "Quick load"));
     tcGameMain->addControl(new touchcontrols::Button("map", touchcontrols::RectF(2, 0, 4, 2), "map", PORT_ACT_MAP, false, false, "Show map"));
@@ -242,7 +242,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     tcGameMain->addControl(flyQs);
 
 
-    tcGameMain->addControl(new touchcontrols::Button("jump", touchcontrols::RectF(24, 3, 26, 5), "jump", PORT_ACT_JUMP, false, hideJump, "Jump"));
+    tcGameMain->addControl(new touchcontrols::Button("jump", touchcontrols::RectF(24, 12.5, 26, 14.3), "jump", PORT_ACT_JUMP, false, hideJump, "Jump"));
     tcGameMain->addControl(new touchcontrols::Button("use_inventory", touchcontrols::RectF(0, 9, 2, 11), "inventory", KEY_SHOW_INV, false, hideInventory, "Show Inventory"));
     tcGameMain->addControl(new touchcontrols::Button("activate_inventory", touchcontrols::RectF(22, 3, 24, 5), "inventory_use_fade", PORT_ACT_INVUSE, false, true, "Use Inventory"));
     tcGameMain->addControl(new touchcontrols::Button("crouch", touchcontrols::RectF(24, 14, 26, 16), "crouch", PORT_ACT_DOWN, false, true, "Crouch"));
@@ -266,14 +266,14 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     // ButtonGrid over it: the duplicate grid produced blocky cell backgrounds
     // and competing touch targets in the same thumb area.
 
-    touchJoyRight = new touchcontrols::TouchJoy("touch", touchcontrols::RectF(13, 7.5, 21, 15.5), "look_arrow", "fixed_stick_circle");
+    touchJoyRight = new touchcontrols::TouchJoy("touch", touchcontrols::RectF(13.5, 5.5, 21, 13.5), "look_arrow", "fixed_stick_circle");
     // Fixed right thumb zone for predictable camera aiming.
     touchJoyRight->setCenterAnchor(true);
     tcGameMain->addControl(touchJoyRight);
     touchJoyRight->signal_move.connect(sigc::mem_fun(this, &TouchInterface::rightStick));
     touchJoyRight->signal_double_tap.connect(sigc::mem_fun(this, &TouchInterface::rightDoubleTap));
 
-    touchJoyLeft = new touchcontrols::TouchJoy("stick", touchcontrols::RectF(0.5, 7.5, 8.5, 15.5), "strafe_arrow", "fixed_stick_circle");
+    touchJoyLeft = new touchcontrols::TouchJoy("stick", touchcontrols::RectF(0.5, 5.5, 8, 13.5), "strafe_arrow", "fixed_stick_circle");
     // Keep a visible anchored movement pad so the left thumb has a clear home zone.
     touchJoyLeft->setCenterAnchor(true);
     tcGameMain->addControl(touchJoyLeft);
@@ -490,7 +490,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     // Versioned profile bypasses old saved coordinates that override defaults.
     tcGameMain->setXMLFile((std::string) filesPath + "/game_"
     ENGINE_NAME
-    "_bethesda_v5.xml");
+    "_bethesda_v6.xml");
     tcInventory->setXMLFile((std::string) filesPath + "/inventory_"
     ENGINE_NAME
     ".xml");
