@@ -46,9 +46,11 @@ void TouchJoy::resetOutput()
 
 void TouchJoy::updateSize()
 {
-    // Size the thumb cap relative to its touch zone so it remains easy to see
-    // on both compact phones and larger landscape displays.
-    glRect.resize(controlPos.width() * 0.22f, controlPos.height() * 0.22f);
+    // Keep the thumb cap square. Using the full zone width and height
+    // independently stretched it into an oval on the wide right-look zone.
+    // Scale from the shorter side so both sticks remain proportionate.
+    const float thumbSize = std::min(controlPos.width(), controlPos.height()) * 0.22f;
+    glRect.resize(thumbSize, thumbSize);
 }
 
 
