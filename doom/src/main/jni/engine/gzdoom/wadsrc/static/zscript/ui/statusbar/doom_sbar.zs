@@ -90,9 +90,14 @@ class DoomStatusBar : BaseStatusBar
 
 		DrawString(mIndexFont, "AMMO", (222, 178), DI_NOSHADOW, Font.CR_GOLD);
 		if (a1 != null)
+		{
 			DrawString(mHUDFont, FormatNumber(a1.Amount, 3), (222, 191), DI_NOSHADOW, Font.CR_GOLD);
+			DrawInventoryIcon(a1, (252, 191), DI_DIMDEPLETED, 1.0, (16, 16));
+		}
 		else
+		{
 			DrawString(mHUDFont, "---", (222, 191), DI_NOSHADOW, Font.CR_GOLD);
+		}
 
 		if (deathmatch || teamplay)
 		{
