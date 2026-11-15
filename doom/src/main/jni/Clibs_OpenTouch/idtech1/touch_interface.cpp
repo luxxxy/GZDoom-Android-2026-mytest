@@ -138,9 +138,8 @@ void TouchInterface::createControls(std::string filesPath)
 
 void TouchInterface::createControlsDoom(std::string filesPath)
 {
-    LOGI("creating controls - Bethesda HUD v10");
+    LOGI("creating controls - Bethesda HUD v11");
 
-    // Keep joystick ownership per finger. Without this, a second touch can
     // Keep joystick ownership per finger. A second touch must not steal the
     // active look/move stick while another finger holds fire.
     touchcontrols::setTouchJoyMultiTouch(true);
@@ -211,14 +210,13 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     // deliberately the largest button; secondary fire and Use sit above and
     // below it with clear gaps. All original bindings are preserved.
     tcGameMain->addControl(new touchcontrols::Button("attack", touchcontrols::RectF(22.0, 10.2, 26.0, 14.2), "shoot", KEY_SHOOT, false, false, "Attack!"));
-    tcGameMain->addControl(new touchcontrols::Button("attack2", touchcontrols::RectF(20.0, 7.6, 22.4, 10.0), "shoot", KEY_SHOOT, false, false, "Secondary fire"));
+    tcGameMain->addControl(new touchcontrols::Button("attack2", touchcontrols::RectF(20.0, 7.6, 22.4, 10.0), "shoot_alt", PORT_ACT_ALT_ATTACK, false, false, "Alternate fire"));
 
     tcGameMain->addControl(new touchcontrols::Button("use", touchcontrols::RectF(19.8, 12.0, 21.8, 14.0), "use", PORT_ACT_USE, false, false, "Use/Open"));
     tcGameMain->addControl(new touchcontrols::Button("quick_save", touchcontrols::RectF(24, 0, 26, 2), "save", PORT_ACT_QUICKSAVE, false, false, "Quick save"));
     tcGameMain->addControl(new touchcontrols::Button("quick_load", touchcontrols::RectF(20, 0, 22, 2), "load", PORT_ACT_QUICKLOAD, false, false, "Quick load"));
     tcGameMain->addControl(new touchcontrols::Button("map", touchcontrols::RectF(2, 0, 4, 2), "map", PORT_ACT_MAP, false, false, "Show map"));
     tcGameMain->addControl(new touchcontrols::Button("keyboard", touchcontrols::RectF(8, 0, 10, 2), "keyboard", KEY_SHOW_KBRD, false, false, "Show keyboard"));
-    tcGameMain->addControl(new touchcontrols::Button("show_mouse", touchcontrols::RectF(4, 0, 6, 2), "mouse2", KEY_USE_MOUSE, false, true, "Use mouse"));
 
     tcGameMain->addControl(new touchcontrols::Button("mp_chat", touchcontrols::RectF(18, 0, 20, 2), "chat", PORT_ACT_MP_SAY, false, true, "Multiplayer chat"));
 
@@ -495,7 +493,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     // Versioned profile bypasses old saved coordinates that override defaults.
     tcGameMain->setXMLFile((std::string) filesPath + "/game_"
     ENGINE_NAME
-    "_bethesda_v8.xml");
+    "_bethesda_v10.xml");
     tcInventory->setXMLFile((std::string) filesPath + "/inventory_"
     ENGINE_NAME
     ".xml");
