@@ -80,6 +80,14 @@ class DoomStatusBar : BaseStatusBar
 		Fill(color(255, 42, 48, 56), 116, 196, 72, 2);
 		if (armorWidth > 0) Fill(color(255, 72, 164, 232), 116, 196, armorWidth, 2);
 
+		// Current weapon icon keeps the center of the bar useful without
+		// relying on the old fixed Doom status-bar artwork.
+		DrawString(mIndexFont, "WEAPON", (160, 178), DI_TEXT_ALIGN_CENTER|DI_NOSHADOW, Font.CR_GOLD);
+		if (CPlayer.ReadyWeapon != null)
+		{
+			DrawInventoryIcon(CPlayer.ReadyWeapon, (160, 191), DI_DIMDEPLETED, 1.0, (24, 18));
+		}
+
 		DrawString(mIndexFont, "AMMO", (222, 178), DI_NOSHADOW, Font.CR_GOLD);
 		if (a1 != null)
 			DrawString(mHUDFont, FormatNumber(a1.Amount, 3), (222, 191), DI_NOSHADOW, Font.CR_GOLD);
