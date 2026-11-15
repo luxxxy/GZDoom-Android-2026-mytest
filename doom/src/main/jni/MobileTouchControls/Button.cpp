@@ -157,12 +157,10 @@ bool Button::drawGL(bool forEditor)
             // Per-button alpha multiplier (e.g. dim an unavailable action). The
             // owning TouchControls already set the colour/alpha; scale that alpha,
             // preserving the RGB. 1.0 (default) leaves it untouched.
+            GLfloat drawR = 1.0f, drawG = 1.0f, drawB = 1.0f, drawA = 1.0f;
+            gl_getColor(drawR, drawG, drawB, drawA);
             if(drawAlpha != 1.0f)
-            {
-                GLfloat r, g, b, a;
-                gl_getColor(r, g, b, a);
-                gl_color4f(r, g, b, a * drawAlpha);
-            }
+                gl_color4f(drawR, drawG, drawB, drawA * drawAlpha);
 
             // Modern HUD treatment for the primary gameplay actions. Keep the
             // original control textures and hitboxes, but give the important
@@ -205,6 +203,8 @@ bool Button::drawGL(bool forEditor)
             }
 
             gl_drawRect(glTex[glTexDraw], controlPos.left, controlPos.top, glRect);
+            // Avoid leaking per-button alpha into the next control draw.
+            gl_color4f(drawR, drawG, drawB, drawA);
         }
     }
 
