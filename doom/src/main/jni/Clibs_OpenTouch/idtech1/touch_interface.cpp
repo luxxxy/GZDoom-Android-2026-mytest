@@ -276,6 +276,8 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     touchJoyRight->signal_double_tap.connect(sigc::mem_fun(this, &TouchInterface::rightDoubleTap));
 
     touchJoyLeft = new touchcontrols::TouchJoy("stick", touchcontrols::RectF(0, 7, 8, 16), "strafe_arrow", "fixed_stick_circle");
+    // Keep a visible anchored movement pad so the left thumb has a clear home zone.
+    touchJoyLeft->setCenterAnchor(true);
     tcGameMain->addControl(touchJoyLeft);
     touchJoyLeft->signal_move.connect(sigc::mem_fun(this, &TouchInterface::leftStick));
     touchJoyLeft->signal_double_tap.connect(sigc::mem_fun(this, &TouchInterface::leftDoubleTap));
