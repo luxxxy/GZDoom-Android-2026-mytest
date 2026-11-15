@@ -138,7 +138,7 @@ void TouchInterface::createControls(std::string filesPath)
 
 void TouchInterface::createControlsDoom(std::string filesPath)
 {
-    LOGI("creating controls - Bethesda HUD v4");
+    LOGI("creating controls - Bethesda HUD v5");
 
     tcMenuMain = new touchcontrols::TouchControls("menu", false, true, 10, false);
     tcYesNo = new touchcontrols::TouchControls("yes_no", false, false);
@@ -262,13 +262,9 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     tcGameMain->addControl(new touchcontrols::Button("console", touchcontrols::RectF(6, 0, 8, 2), "tild", PORT_ACT_CONSOLE, false, true, "Console"));
     tcGameMain->addControl(new touchcontrols::Button("gyro_toggle", touchcontrols::RectF(17, 3, 19, 5), "gyro", PORT_ACT_GYRO_TOGGLE, false, true, "Gyro Smart Toggle"));
 
-    touchcontrols::ButtonGrid *dpad = new touchcontrols::ButtonGrid("dpad_move", touchcontrols::RectF(6.5, 3, 12, 7), "", 3, 2, true, "Movement btns (WASD)");
-
-    dpad->addCell(0, 1, "direction_left", PORT_ACT_MOVE_LEFT);
-    dpad->addCell(2, 1, "direction_right", PORT_ACT_MOVE_RIGHT);
-    dpad->addCell(1, 0, "direction_up", PORT_ACT_FWD);
-    dpad->addCell(1, 1, "direction_down", PORT_ACT_BACK);
-    tcGameMain->addControl(dpad);
+    // Movement is handled by the anchored left joystick. Do not draw a second
+    // ButtonGrid over it: the duplicate grid produced blocky cell backgrounds
+    // and competing touch targets in the same thumb area.
 
     touchJoyRight = new touchcontrols::TouchJoy("touch", touchcontrols::RectF(13, 7.5, 21, 15.5), "look_arrow", "fixed_stick_circle");
     // Fixed right thumb zone for predictable camera aiming.
@@ -295,17 +291,18 @@ void TouchInterface::createControlsDoom(std::string filesPath)
 
     //Weapons -------------------------------------------
     //------------------------------------------------------
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon1", touchcontrols::RectF(1, 14, 3, 16), "key_1", 1));
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon2", touchcontrols::RectF(3, 14, 5, 16), "key_2", 2));
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon3", touchcontrols::RectF(5, 14, 7, 16), "key_3", 3));
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon4", touchcontrols::RectF(7, 14, 9, 16), "key_4", 4));
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon5", touchcontrols::RectF(9, 14, 11, 16), "key_5", 5));
-
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon6", touchcontrols::RectF(15, 14, 17, 16), "key_6", 6));
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon7", touchcontrols::RectF(17, 14, 19, 16), "key_7", 7));
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon8", touchcontrols::RectF(19, 14, 21, 16), "key_8", 8));
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon9", touchcontrols::RectF(21, 14, 23, 16), "key_9", 9));
-    tcGameWeapons->addControl(new touchcontrols::Button("weapon0", touchcontrols::RectF(23, 14, 25, 16), "key_0", 0));
+    // Compact horizontal weapon strip. It appears only when the weapon
+    // selector is opened, keeping the normal gameplay view uncluttered.
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon1", touchcontrols::RectF(7, 0.25, 8.2, 2.25), "key_1", 1));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon2", touchcontrols::RectF(8.2, 0.25, 9.4, 2.25), "key_2", 2));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon3", touchcontrols::RectF(9.4, 0.25, 10.6, 2.25), "key_3", 3));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon4", touchcontrols::RectF(10.6, 0.25, 11.8, 2.25), "key_4", 4));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon5", touchcontrols::RectF(11.8, 0.25, 13, 2.25), "key_5", 5));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon6", touchcontrols::RectF(13, 0.25, 14.2, 2.25), "key_6", 6));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon7", touchcontrols::RectF(14.2, 0.25, 15.4, 2.25), "key_7", 7));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon8", touchcontrols::RectF(15.4, 0.25, 16.6, 2.25), "key_8", 8));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon9", touchcontrols::RectF(16.6, 0.25, 17.8, 2.25), "key_9", 9));
+    tcGameWeapons->addControl(new touchcontrols::Button("weapon0", touchcontrols::RectF(17.8, 0.25, 19, 2.25), "key_0", 0));
 
     tcGameWeapons->signal_button.connect(sigc::mem_fun(this, &TouchInterface::selectWeaponButton));
     tcGameWeapons->setAlpha(0.8);
@@ -493,7 +490,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     // Versioned profile bypasses old saved coordinates that override defaults.
     tcGameMain->setXMLFile((std::string) filesPath + "/game_"
     ENGINE_NAME
-    "_bethesda_v4.xml");
+    "_bethesda_v5.xml");
     tcInventory->setXMLFile((std::string) filesPath + "/inventory_"
     ENGINE_NAME
     ".xml");
