@@ -163,15 +163,15 @@ bool Button::drawGL(bool forEditor)
             GLfloat drawR = 1.0f, drawG = 1.0f, drawB = 1.0f, drawA = 1.0f;
             gl_getColor(drawR, drawG, drawB, drawA);
 
-            // Give the important gameplay controls a restrained circular HUD
-            // outline. Unlike a stretched panel, this remains round at every
-            // control size and keeps the icon itself unobstructed.
+            // Layered sci-fi instrument rings: a fine outer bezel, a broken
+            // inner index ring, and four cardinal ticks. Keep the centre clear
+            // so the original action glyph remains legible over the game.
             const bool hudButton = tag == "attack" || tag == "attack2" ||
                 tag == "use" || tag == "jump" || tag == "show_weapons" ||
                 tag == "next_weapon" || tag == "prev_weapon";
             if(hudButton)
             {
-                static GLLines hudRing(24);
+                static GLLines hudBezel(32);
                 const float radius = (glRect.width < glRect.height ? glRect.width : glRect.height) * 0.49f;
                 const float cx = controlPos.left + glRect.width * 0.5f;
                 const float cy = controlPos.top + glRect.height * 0.5f;
@@ -181,20 +181,35 @@ bool Button::drawGL(bool forEditor)
                     const float a0 = tau * (float)n / 24.0f;
                     const float a1 = tau * (float)(n + 1) / 24.0f;
                     const int v = n * 6;
-                    hudRing.vertices[v + 0] = cosf(a0) * radius;
-                    hudRing.vertices[v + 1] = sinf(a0) * radius;
-                    hudRing.vertices[v + 2] = 0.0f;
-                    hudRing.vertices[v + 3] = cosf(a1) * radius;
-                    hudRing.vertices[v + 4] = sinf(a1) * radius;
-                    hudRing.vertices[v + 5] = 0.0f;
+                    hudBezel.vertices[v + 0] = cosf(a0) * radius;
+                    hudBezel.vertices[v + 1] = sinf(a0) * radius;
+                    hudBezel.vertices[v + 2] = 0.0f;
+                    hudBezel.vertices[v + 3] = cosf(a1) * radius;
+                    hudBezel.vertices[v + 4] = sinf(a1) * radius;
+                    hudBezel.vertices[v + 5] = 0.0f;
                 }
+                // Eight short radial index marks give the controls a machined,
+                // diegetic bezel without adding opaque panels or hiding gameplay.
+                for(int n = 0; n < 8; ++n)
+                {
+                    const float a = tau * (float)n / 8.0f;
+                    const int v = (24 + n) * 6;
+                    hudBezel.vertices[v + 0] = cosf(a) * radius * 0.82f;
+                    hudBezel.vertices[v + 1] = sinf(a) * radius * 0.82f;
+                    hudBezel.vertices[v + 2] = 0.0f;
+                    hudBezel.vertices[v + 3] = cosf(a) * radius * 0.96f;
+                    hudBezel.vertices[v + 4] = sinf(a) * radius * 0.96f;
+                    hudBezel.vertices[v + 5] = 0.0f;
+                }
+
+                const bool pressed = (id != -1);
                 if(tag == "attack")
-                    gl_color4f(1.0f, 0.30f, 0.12f, drawA * 0.55f);
+                    gl_color4f(1.0f, 0.34f, 0.16f, drawA * (pressed ? 0.92f : 0.58f));
                 else if(tag == "attack2")
-                    gl_color4f(1.0f, 0.58f, 0.20f, drawA * 0.50f);
+                    gl_color4f(1.0f, 0.66f, 0.28f, drawA * (pressed ? 0.86f : 0.52f));
                 else
-                    gl_color4f(0.30f, 0.78f, 1.0f, drawA * 0.42f);
-                gl_drawLines(cx, cy, hudRing);
+                    gl_color4f(0.48f, 0.78f, 0.88f, drawA * (pressed ? 0.82f : 0.44f));
+                gl_drawLines(cx, cy, hudBezel);
                 gl_color4f(drawR, drawG, drawB, drawA);
             }
 
