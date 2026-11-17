@@ -163,9 +163,8 @@ bool Button::drawGL(bool forEditor)
             GLfloat drawR = 1.0f, drawG = 1.0f, drawB = 1.0f, drawA = 1.0f;
             gl_getColor(drawR, drawG, drawB, drawA);
 
-            // Layered sci-fi instrument rings: a fine outer bezel, a broken
-            // inner index ring, and four cardinal ticks. Keep the centre clear
-            // so the original action glyph remains legible over the game.
+            // Machined steel bezels with a restrained Doom-red combat accent.
+            // Original icon textures remain the primary visual cue.
             const bool weaponSlot = tag == "weapon0" || tag == "weapon1" ||
                 tag == "weapon2" || tag == "weapon3" || tag == "weapon4" ||
                 tag == "weapon5" || tag == "weapon6" || tag == "weapon7" ||
@@ -174,10 +173,12 @@ bool Button::drawGL(bool forEditor)
                 tag == "use" || tag == "jump" || tag == "map" ||
                 tag == "show_weapons" || tag == "next_weapon" ||
                 tag == "prev_weapon" || weaponSlot;
+            const float buttonAlpha = drawA * drawAlpha;
             if(hudButton)
             {
-                static GLLines hudBezel(32);
+                static GLLines hudBezel(56);
                 const float radius = (glRect.width < glRect.height ? glRect.width : glRect.height) * 0.49f;
+                const float innerRadius = radius * 0.82f;
                 const float cx = controlPos.left + glRect.width * 0.5f;
                 const float cy = controlPos.top + glRect.height * 0.5f;
                 const float tau = 6.28318530718f;
@@ -185,59 +186,52 @@ bool Button::drawGL(bool forEditor)
                 {
                     const float a0 = tau * (float)n / 24.0f;
                     const float a1 = tau * (float)(n + 1) / 24.0f;
-                    const int v = n * 6;
-                    hudBezel.vertices[v + 0] = cosf(a0) * radius;
-                    hudBezel.vertices[v + 1] = sinf(a0) * radius;
-                    hudBezel.vertices[v + 2] = 0.0f;
-                    hudBezel.vertices[v + 3] = cosf(a1) * radius;
-                    hudBezel.vertices[v + 4] = sinf(a1) * radius;
-                    hudBezel.vertices[v + 5] = 0.0f;
+                    const int outer = n * 6;
+                    const int inner = (24 + n) * 6;
+                    hudBezel.vertices[outer + 0] = cosf(a0) * radius;
+                    hudBezel.vertices[outer + 1] = sinf(a0) * radius;
+                    hudBezel.vertices[outer + 2] = 0.0f;
+                    hudBezel.vertices[outer + 3] = cosf(a1) * radius;
+                    hudBezel.vertices[outer + 4] = sinf(a1) * radius;
+                    hudBezel.vertices[outer + 5] = 0.0f;
+                    hudBezel.vertices[inner + 0] = cosf(a0) * innerRadius;
+                    hudBezel.vertices[inner + 1] = sinf(a0) * innerRadius;
+                    hudBezel.vertices[inner + 2] = 0.0f;
+                    hudBezel.vertices[inner + 3] = cosf(a1) * innerRadius;
+                    hudBezel.vertices[inner + 4] = sinf(a1) * innerRadius;
+                    hudBezel.vertices[inner + 5] = 0.0f;
                 }
-                // Eight short radial index marks give the controls a machined,
-                // diegetic bezel without adding opaque panels or hiding gameplay.
                 for(int n = 0; n < 8; ++n)
                 {
                     const float a = tau * (float)n / 8.0f;
-                    const int v = (24 + n) * 6;
-                    hudBezel.vertices[v + 0] = cosf(a) * radius * 0.82f;
-                    hudBezel.vertices[v + 1] = sinf(a) * radius * 0.82f;
+                    const int v = (48 + n) * 6;
+                    hudBezel.vertices[v + 0] = cosf(a) * radius * 0.88f;
+                    hudBezel.vertices[v + 1] = sinf(a) * radius * 0.88f;
                     hudBezel.vertices[v + 2] = 0.0f;
-                    hudBezel.vertices[v + 3] = cosf(a) * radius * 0.96f;
-                    hudBezel.vertices[v + 4] = sinf(a) * radius * 0.96f;
+                    hudBezel.vertices[v + 3] = cosf(a) * radius * 0.98f;
+                    hudBezel.vertices[v + 4] = sinf(a) * radius * 0.98f;
                     hudBezel.vertices[v + 5] = 0.0f;
                 }
 
                 const bool pressed = (id != -1);
-                if(tag == "attack")
-                    gl_color4f(1.0f, 0.34f, 0.16f, drawA * (pressed ? 0.92f : 0.58f));
-                else if(tag == "attack2")
-                    gl_color4f(1.0f, 0.66f, 0.28f, drawA * (pressed ? 0.86f : 0.52f));
-                else if(tag == "map")
-                    gl_color4f(0.42f, 0.76f, 0.88f, drawA * (pressed ? 0.84f : 0.48f));
-                else if(weaponSlot || tag == "show_weapons" ||
-                        tag == "next_weapon" || tag == "prev_weapon")
-                    gl_color4f(0.86f, 0.68f, 0.40f, drawA * (pressed ? 0.84f : 0.46f));
+                const bool fireControl = tag == "attack" || tag == "attack2";
+                if(fireControl)
+                    gl_color4f(0.78f, 0.16f, 0.12f, buttonAlpha * (pressed ? 0.88f : 0.32f));
                 else
-                    gl_color4f(0.48f, 0.78f, 0.88f, drawA * (pressed ? 0.82f : 0.44f));
+                    gl_color4f(0.70f, 0.72f, 0.74f, buttonAlpha * (pressed ? 0.78f : 0.28f));
                 gl_drawLines(cx, cy, hudBezel);
                 gl_color4f(drawR, drawG, drawB, drawA);
+
+                // Keep glyphs crisp and neutral; only the firing bezel carries red.
+                if(fireControl)
+                    gl_color4f(0.98f, 0.86f, 0.82f, buttonAlpha);
+                else
+                    gl_color4f(0.88f, 0.90f, 0.92f, buttonAlpha);
             }
-
-            if(drawAlpha != 1.0f)
-                gl_color4f(drawR, drawG, drawB, drawA * drawAlpha);
-
-            // Warm fire controls and cool utility controls read clearly
-            // against the game without opaque square panels.
-            if(tag == "attack")
-                gl_color4f(1.0f, 0.38f, 0.18f, drawA);
-            else if(tag == "attack2")
-                gl_color4f(1.0f, 0.62f, 0.24f, drawA);
-            else if(tag == "use" || tag == "jump")
-                gl_color4f(0.35f, 0.88f, 1.0f, drawA);
-            else if(tag == "show_weapons" || tag == "next_weapon" || tag == "prev_weapon" || weaponSlot)
-                gl_color4f(0.92f, 0.72f, 0.42f, drawA);
-            else if(tag == "map")
-                gl_color4f(0.52f, 0.82f, 0.92f, drawA);
+            else if(drawAlpha != 1.0f)
+            {
+                gl_color4f(drawR, drawG, drawB, buttonAlpha);
+            }
 
             gl_drawRect(glTex[glTexDraw], controlPos.left, controlPos.top, glRect);
             // Avoid leaking per-button tint or alpha into the next control draw.

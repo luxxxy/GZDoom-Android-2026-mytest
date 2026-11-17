@@ -237,47 +237,50 @@ bool TouchJoy::drawGL(bool forEditor)
             if(glTexBackground != -1)
                 gl_drawRect(glTexBackground, controlPos.left + (controlPos.width() - width) / 2, controlPos.top + (controlPos.height() - height) / 2, bgRect);
 
-            // Custom Bethesda-inspired instrument well. Thin concentric
-            // rings and cardinal index marks provide a tactile reference
-            // without filling the movement/look zones with opaque artwork.
-            static GLLines wellRing(32);
+            // Brushed-steel control wells echo the classic Doom status-bar
+            // hardware. The rings stay faint at rest and brighten while held.
+            static GLLines wellRings(48);
             static GLLines wellTicks(8);
             const float cx = controlPos.left + controlPos.width() * 0.5f;
             const float cy = controlPos.top + controlPos.height() * 0.5f;
             const float radius = (width < height ? width : height) * 0.46f;
-            const float innerRadius = radius * 0.88f;
+            const float innerRadius = radius * 0.80f;
             const float tau = 6.28318530718f;
             for(int n = 0; n < 24; ++n)
             {
                 const float a0 = tau * (float)n / 24.0f;
                 const float a1 = tau * (float)(n + 1) / 24.0f;
-                const int v = n * 6;
-                wellRing.vertices[v + 0] = cosf(a0) * radius;
-                wellRing.vertices[v + 1] = sinf(a0) * radius;
-                wellRing.vertices[v + 2] = 0.0f;
-                wellRing.vertices[v + 3] = cosf(a1) * radius;
-                wellRing.vertices[v + 4] = sinf(a1) * radius;
-                wellRing.vertices[v + 5] = 0.0f;
+                const int outer = n * 6;
+                const int inner = (24 + n) * 6;
+                wellRings.vertices[outer + 0] = cosf(a0) * radius;
+                wellRings.vertices[outer + 1] = sinf(a0) * radius;
+                wellRings.vertices[outer + 2] = 0.0f;
+                wellRings.vertices[outer + 3] = cosf(a1) * radius;
+                wellRings.vertices[outer + 4] = sinf(a1) * radius;
+                wellRings.vertices[outer + 5] = 0.0f;
+                wellRings.vertices[inner + 0] = cosf(a0) * innerRadius;
+                wellRings.vertices[inner + 1] = sinf(a0) * innerRadius;
+                wellRings.vertices[inner + 2] = 0.0f;
+                wellRings.vertices[inner + 3] = cosf(a1) * innerRadius;
+                wellRings.vertices[inner + 4] = sinf(a1) * innerRadius;
+                wellRings.vertices[inner + 5] = 0.0f;
             }
             for(int n = 0; n < 8; ++n)
             {
                 const float a = tau * (float)n / 8.0f;
                 const int v = n * 6;
-                wellTicks.vertices[v + 0] = cosf(a) * innerRadius;
-                wellTicks.vertices[v + 1] = sinf(a) * innerRadius;
+                wellTicks.vertices[v + 0] = cosf(a) * radius * 0.88f;
+                wellTicks.vertices[v + 1] = sinf(a) * radius * 0.88f;
                 wellTicks.vertices[v + 2] = 0.0f;
-                wellTicks.vertices[v + 3] = cosf(a) * radius;
-                wellTicks.vertices[v + 4] = sinf(a) * radius;
+                wellTicks.vertices[v + 3] = cosf(a) * radius * 0.98f;
+                wellTicks.vertices[v + 4] = sinf(a) * radius * 0.98f;
                 wellTicks.vertices[v + 5] = 0.0f;
             }
 
             GLfloat oldR = 1.0f, oldG = 1.0f, oldB = 1.0f, oldA = 1.0f;
             gl_getColor(oldR, oldG, oldB, oldA);
-            if(tag == "touch")
-                gl_color4f(0.46f, 0.78f, 0.88f, oldA * (pid != -1 ? 0.78f : 0.36f));
-            else
-                gl_color4f(0.86f, 0.67f, 0.38f, oldA * (pid != -1 ? 0.72f : 0.30f));
-            gl_drawLines(cx, cy, wellRing);
+            gl_color4f(0.70f, 0.72f, 0.74f, oldA * (pid != -1 ? 0.72f : 0.25f));
+            gl_drawLines(cx, cy, wellRings);
             gl_drawLines(cx, cy, wellTicks);
             gl_color4f(oldR, oldG, oldB, oldA);
 

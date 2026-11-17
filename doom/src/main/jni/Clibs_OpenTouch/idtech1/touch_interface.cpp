@@ -138,7 +138,7 @@ void TouchInterface::createControls(std::string filesPath)
 
 void TouchInterface::createControlsDoom(std::string filesPath)
 {
-    LOGI("creating controls - DOOM mobile HUD redesign v1");
+    LOGI("creating controls - DOOM mobile HUD redesign v2");
 
     // Keep joystick ownership per finger. A second touch must not steal the
     // active look/move stick while another finger holds fire.
@@ -209,7 +209,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     // and a distinct action cluster on the far edge. Every primary target has
     // breathing room; secondary utilities stay out of the combat area.
     tcGameMain->addControl(new touchcontrols::Button("attack", touchcontrols::RectF(22.0, 10.6, 26.0, 14.6), "shoot", KEY_SHOOT, false, false, "Fire"));
-    tcGameMain->addControl(new touchcontrols::Button("attack2", touchcontrols::RectF(19.4, 8.2, 21.7, 10.5), "shoot_alt", PORT_ACT_ALT_ATTACK, false, false, "Alternate fire"));
+    tcGameMain->addControl(new touchcontrols::Button("attack2", touchcontrols::RectF(6.2, 2.35, 8.7, 4.85), "shoot_alt", PORT_ACT_ALT_ATTACK, false, false, "Alternate fire"));
     tcGameMain->addControl(new touchcontrols::Button("use", touchcontrols::RectF(19.4, 11.5, 21.7, 13.8), "use", PORT_ACT_USE, false, false, "Use / open"));
     tcGameMain->addControl(new touchcontrols::Button("quick_save", touchcontrols::RectF(24, 0, 26, 2), "save", PORT_ACT_QUICKSAVE, false, true, "Quick save"));
     tcGameMain->addControl(new touchcontrols::Button("quick_load", touchcontrols::RectF(22, 0, 24, 2), "load", PORT_ACT_QUICKLOAD, false, true, "Quick load"));
@@ -489,7 +489,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     // New profile ensures previous saved layouts do not override this redesign.
     tcGameMain->setXMLFile((std::string) filesPath + "/game_"
     ENGINE_NAME
-    "_doom_mobile_redesign_v1.xml");
+    "_doom_mobile_redesign_v2.xml");
     tcInventory->setXMLFile((std::string) filesPath + "/inventory_"
     ENGINE_NAME
     ".xml");
@@ -498,7 +498,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     ".xml");
     tcGameWeapons->setXMLFile((std::string) filesPath + "/weapons_"
     ENGINE_NAME
-    "_doom_mobile_redesign_v1.xml");
+    "_doom_mobile_redesign_v2.xml");
     tcCustomButtons->setXMLFile((std::string) filesPath + "/custom_buttons_0_"
     ENGINE_NAME
     ".xml");

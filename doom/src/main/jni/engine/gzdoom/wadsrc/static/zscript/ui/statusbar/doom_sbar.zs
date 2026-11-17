@@ -57,90 +57,53 @@ class DoomStatusBar : BaseStatusBar
 
 	protected void DrawMainBar (double TicFrac)
 	{
-		// Industrial, Fallout-era instrument panel: layered graphite plates,
-		// restrained brass edge-lighting and separate readable data bays.
-		Fill(color(246, 5, 8, 12), 0, 168, 320, 32);
-		Fill(color(255, 220, 154, 68), 0, 168, 320, 1);
-		Fill(color(255, 66, 48, 30), 0, 169, 320, 1);
-		Fill(color(224, 17, 23, 29), 7, 173, 82, 23);
-		Fill(color(224, 17, 23, 29), 108, 173, 82, 23);
-		Fill(color(224, 17, 23, 29), 214, 173, 99, 23);
-		Fill(color(255, 86, 68, 43), 7, 173, 82, 1);
-		Fill(color(255, 86, 68, 43), 108, 173, 82, 1);
-		Fill(color(255, 86, 68, 43), 214, 173, 99, 1);
-		Fill(color(255, 62, 70, 75), 99, 176, 1, 17);
-		Fill(color(255, 62, 70, 75), 202, 176, 1, 17);
-		// Small brass registration marks make the panel feel manufactured,
-		// without adding visual clutter over the play area.
-		Fill(color(255, 220, 154, 68), 9, 175, 5, 1);
-		Fill(color(255, 220, 154, 68), 85, 175, 2, 1);
-		Fill(color(255, 220, 154, 68), 110, 175, 5, 1);
-		Fill(color(255, 220, 154, 68), 186, 175, 2, 1);
-		Fill(color(255, 220, 154, 68), 216, 175, 5, 1);
-		Fill(color(255, 220, 154, 68), 308, 175, 3, 1);
+		// Use the original Doom status-bar art, face and weapon indicators: the
+		// 25th-anniversary look is rooted in the classic steel panel, not a generic overlay.
+		DrawImage("STBAR", (0, 168), DI_ITEM_OFFSETS);
+		DrawImage("STTPRCNT", (90, 171), DI_ITEM_OFFSETS);
+		DrawImage("STTPRCNT", (221, 171), DI_ITEM_OFFSETS);
+		
+		Inventory a1 = GetCurrentAmmo();
+		if (a1 != null) DrawString(mHUDFont, FormatNumber(a1.Amount, 3), (44, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
+		DrawString(mHUDFont, FormatNumber(CPlayer.health, 3), (90, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
+		DrawString(mHUDFont, FormatNumber(GetArmorAmount(), 3), (221, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
 
-		Ammo a1, a2;
-		int ammoCount1, ammoCount2;
-		[a1, a2, ammoCount1, ammoCount2] = GetCurrentAmmo();
-		int armor = GetArmorAmount();
-		int hpWidth = int(clamp(CPlayer.health, 0, 100) * 0.72);
-		int armorWidth = int(clamp(armor, 0, 200) * 0.36);
-
-		DrawString(mIndexFont, "HEALTH", (12, 178), DI_NOSHADOW, Font.CR_GOLD);
-		DrawString(mHUDFont, FormatNumber(CPlayer.health, 3), (12, 191), DI_NOSHADOW,
-			CPlayer.health < 25 ? Font.CR_RED : (CPlayer.health < 50 ? Font.CR_GOLD : Font.CR_GREEN));
-		Fill(color(255, 42, 48, 56), 12, 196, 72, 2);
-		if (hpWidth > 0) Fill(color(255, 76, 196, 112), 12, 196, hpWidth, 2);
-
-		DrawString(mIndexFont, "ARMOR", (116, 178), DI_NOSHADOW, Font.CR_BLUE);
-		DrawString(mHUDFont, FormatNumber(armor, 3), (116, 191), DI_NOSHADOW,
-			armor < 25 ? Font.CR_RED : Font.CR_BLUE);
-		Fill(color(255, 42, 48, 56), 116, 196, 72, 2);
-		if (armorWidth > 0) Fill(color(255, 72, 164, 232), 116, 196, armorWidth, 2);
-
-		// Current weapon icon keeps the center of the bar useful without
-		// relying on the old fixed Doom status-bar artwork.
-		DrawString(mIndexFont, "WEAPON", (160, 178), DI_TEXT_ALIGN_CENTER|DI_NOSHADOW, Font.CR_GOLD);
-		if (CPlayer.ReadyWeapon != null)
+		DrawBarKeys();
+		DrawBarAmmo();
+		
+		if (deathmatch || teamplay)
 		{
-			DrawInventoryIcon(CPlayer.ReadyWeapon, (160, 191), DI_DIMDEPLETED, 1.0, (24, 18));
-		}
-
-		DrawString(mIndexFont, "AMMO", (222, 178), DI_NOSHADOW, Font.CR_GOLD);
-		if (a1 != null)
-		{
-			DrawString(mHUDFont, FormatNumber(ammoCount1, 3), (222, 191), DI_NOSHADOW, Font.CR_GOLD);
-			DrawInventoryIcon(a1, (252, 191), DI_DIMDEPLETED, 1.0, (16, 16));
+			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3), (138, 171), DI_TEXT_ALIGN_RIGHT);
 		}
 		else
 		{
-			DrawString(mHUDFont, "---", (222, 191), DI_NOSHADOW, Font.CR_GOLD);
+			DrawBarWeapons();
 		}
-
-		if (deathmatch || teamplay)
+		
+		if (multiplayer)
 		{
-			DrawString(mIndexFont, "FRAGS", (276, 178), DI_NOSHADOW, Font.CR_GOLD);
-			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 2), (276, 191), DI_NOSHADOW, Font.CR_GOLD);
+			DrawImage("STFBANY", (143, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
 		}
-
+		
 		if (CPlayer.mo.InvSel != null && !Level.NoInventoryBar)
 		{
-			// Keep the selected item in its own narrow panel instead of drawing
-			// it over the weapon icon in the middle of the HUD.
-			DrawString(mIndexFont, "ITEM", (190, 178), DI_NOSHADOW, Font.CR_GOLD);
-			DrawInventoryIcon(CPlayer.mo.InvSel, (200, 191), DI_DIMDEPLETED, 1.0, (14, 14));
+			DrawInventoryIcon(CPlayer.mo.InvSel, (160, 198), DI_DIMDEPLETED);
 			if (CPlayer.mo.InvSel.Amount > 1)
 			{
-				DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (210, 198), DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
+				DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (175, 198-mIndexFont.mFont.GetHeight()), DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
 			}
+		}
+		else
+		{
+			DrawTexture(GetMugShot(5), (143, 168), DI_ITEM_OFFSETS);
 		}
 		if (isInventoryBarVisible())
 		{
-			// Raise the temporary inventory selector above the custom bottom strip.
-			DrawInventoryBar(diparms, (48, 138), 7, DI_ITEM_LEFT_TOP);
+			DrawInventoryBar(diparms, (48, 169), 7, DI_ITEM_LEFT_TOP);
 		}
+		
 	}
-
+	
 	protected virtual void DrawBarKeys()
 	{
 		bool locks[6];
@@ -234,51 +197,53 @@ class DoomStatusBar : BaseStatusBar
 		int armorWidth = int(clamp(armor, 0, 200) * meterWidth / 200);
 		int anchor = DI_SCREEN_LEFT_BOTTOM;
 
-		// Match the classic status-bar treatment in fullscreen mode, anchored
-		// to the bottom edge and scaled with the current display width.
-		Fill(color(246, 5, 8, 12), 0, -32, width, 32, anchor);
-		Fill(color(255, 220, 154, 68), 0, -32, width, 1, anchor);
-		Fill(color(255, 66, 48, 30), 0, -31, width, 1, anchor);
-		Fill(color(224, 17, 23, 29), width * 0.025, -27, width * 0.21, 22, anchor);
-		Fill(color(224, 17, 23, 29), width * 0.265, -27, width * 0.21, 22, anchor);
-		Fill(color(224, 17, 23, 29), width * 0.505, -27, width * 0.18, 22, anchor);
-		Fill(color(224, 17, 23, 29), width * 0.715, -27, width * 0.25, 22, anchor);
-		Fill(color(255, 86, 68, 43), width * 0.025, -27, width * 0.21, 1, anchor);
-		Fill(color(255, 86, 68, 43), width * 0.265, -27, width * 0.21, 1, anchor);
-		Fill(color(255, 86, 68, 43), width * 0.505, -27, width * 0.18, 1, anchor);
-		Fill(color(255, 86, 68, 43), width * 0.715, -27, width * 0.25, 1, anchor);
-		Fill(color(255, 62, 70, 75), width * 0.25, -25, 1, 18, anchor);
-		Fill(color(255, 62, 70, 75), width * 0.49, -25, 1, 18, anchor);
-		Fill(color(255, 62, 70, 75), width * 0.69, -25, 1, 18, anchor);
+		// A compact steel-and-crimson edge HUD for widescreen play. Keep it
+		// shallow and translucent so the 3D view remains the visual priority.
+		Fill(color(220, 8, 10, 13), 0, -32, width, 32, anchor);
+		Fill(color(255, 166, 28, 20), 0, -32, width, 1, anchor);
+		Fill(color(255, 108, 112, 116), 0, -31, width, 1, anchor);
+		Fill(color(216, 31, 34, 38), width * 0.025, -28, width * 0.21, 23, anchor);
+		Fill(color(216, 31, 34, 38), width * 0.265, -28, width * 0.21, 23, anchor);
+		Fill(color(216, 31, 34, 38), width * 0.505, -28, width * 0.18, 23, anchor);
+		Fill(color(216, 31, 34, 38), width * 0.715, -28, width * 0.25, 23, anchor);
+		Fill(color(255, 104, 108, 112), width * 0.025, -28, width * 0.21, 1, anchor);
+		Fill(color(255, 104, 108, 112), width * 0.265, -28, width * 0.21, 1, anchor);
+		Fill(color(255, 104, 108, 112), width * 0.505, -28, width * 0.18, 1, anchor);
+		Fill(color(255, 104, 108, 112), width * 0.715, -28, width * 0.25, 1, anchor);
+		Fill(color(255, 70, 74, 78), width * 0.25, -25, 1, 18, anchor);
+		Fill(color(255, 70, 74, 78), width * 0.49, -25, 1, 18, anchor);
+		Fill(color(255, 70, 74, 78), width * 0.69, -25, 1, 18, anchor);
 
-		DrawString(mIndexFont, "HEALTH", (healthX, -22), anchor|DI_NOSHADOW, Font.CR_GOLD);
+		DrawString(mIndexFont, "HEALTH", (healthX, -22), anchor|DI_NOSHADOW);
 		DrawString(mHUDFont, FormatNumber(CPlayer.health, 3), (healthX, -9),
-			anchor|DI_NOSHADOW, CPlayer.health < 25 ? Font.CR_RED : (CPlayer.health < 50 ? Font.CR_GOLD : Font.CR_GREEN));
-		Fill(color(255, 42, 48, 56), healthX, -4, meterWidth, 2, anchor);
-		if (hpWidth > 0) Fill(color(255, 76, 196, 112), healthX, -4, hpWidth, 2, anchor);
+			anchor|DI_NOSHADOW, Font.CR_RED);
+		Fill(color(255, 42, 45, 48), healthX, -4, meterWidth, 2, anchor);
+		if (hpWidth > 0) Fill(color(255, 190, 34, 24), healthX, -4, hpWidth, 2, anchor);
 
-		DrawString(mIndexFont, "ARMOR", (armorX, -22), anchor|DI_NOSHADOW, Font.CR_BLUE);
+		DrawString(mIndexFont, "ARMOR", (armorX, -22), anchor|DI_NOSHADOW);
 		DrawString(mHUDFont, FormatNumber(armor, 3), (armorX, -9),
-			anchor|DI_NOSHADOW, armor < 25 ? Font.CR_RED : Font.CR_BLUE);
-		Fill(color(255, 42, 48, 56), armorX, -4, meterWidth, 2, anchor);
-		if (armorWidth > 0) Fill(color(255, 72, 164, 232), armorX, -4, armorWidth, 2, anchor);
+			anchor|DI_NOSHADOW, Font.CR_RED);
+		Fill(color(255, 42, 45, 48), armorX, -4, meterWidth, 2, anchor);
+		if (armorWidth > 0) Fill(color(255, 154, 158, 160), armorX, -4, armorWidth, 2, anchor);
 
-		DrawString(mIndexFont, "WEAPON", (weaponX, -22), anchor|DI_NOSHADOW, Font.CR_GOLD);
+		DrawString(mIndexFont, "WEAPON", (weaponX, -22), anchor|DI_NOSHADOW);
 		if (CPlayer.ReadyWeapon != null)
 		{
 			DrawInventoryIcon(CPlayer.ReadyWeapon, (weaponX + width * 0.055, -8),
 				anchor|DI_DIMDEPLETED, 1.0, (24, 18));
 		}
 
-		DrawString(mIndexFont, "AMMO", (ammoX, -22), anchor|DI_NOSHADOW, Font.CR_GOLD);
+		DrawString(mIndexFont, "AMMO", (ammoX, -22), anchor|DI_NOSHADOW);
 		if (a1 != null)
 		{
-			DrawString(mHUDFont, FormatNumber(ammoCount1, 3), (ammoX, -9), anchor|DI_NOSHADOW, Font.CR_GOLD);
-			DrawInventoryIcon(a1, (ammoX + width * 0.075, -8), anchor|DI_DIMDEPLETED, 1.0, (16, 16));
+			DrawString(mHUDFont, FormatNumber(ammoCount1, 3), (ammoX, -9),
+				anchor|DI_NOSHADOW, Font.CR_RED);
+			DrawInventoryIcon(a1, (ammoX + width * 0.075, -8),
+				anchor|DI_DIMDEPLETED, 1.0, (16, 16));
 		}
 		else
 		{
-			DrawString(mHUDFont, "---", (ammoX, -9), anchor|DI_NOSHADOW, Font.CR_GOLD);
+			DrawString(mHUDFont, "---", (ammoX, -9), anchor|DI_NOSHADOW, Font.CR_RED);
 		}
 	}
 

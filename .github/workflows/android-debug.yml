@@ -54,12 +54,24 @@ jobs:
               raise SystemExit("No debug APK was produced")
           source = Path("doom/src/main/jni/engine/gzdoom/wadsrc/static/zscript/ui/statusbar/doom_sbar.zs").read_bytes()
           with ZipFile(apk_files[0]) as apk:
+              names = apk.namelist()
               bundled_pk3 = apk.read("assets/uzdoom.pk3")
+              native_libs = [apk.read(name) for name in names if name.endswith(".so")]
+              if not any(b"DOOM mobile HUD redesign v2" in lib for lib in native_libs):
+                  raise SystemExit("APK is missing the compiled mobile HUD v2 marker")
+              if not any(b"_doom_mobile_redesign_v2.xml" in lib for lib in native_libs):
+                  raise SystemExit("APK is missing the fresh v2 touch-layout profile")
+              required_assets = ["shoot.png", "shoot_alt.png", "use.png", "jump.png",
+                                 "map.png", "look_arrow.png", "strafe_arrow.png",
+                                 "show_weapons.png", "next_weap.png", "prev_weap.png"]
+              missing_assets = [name for name in required_assets if f"assets/{name}" not in names]
+              if missing_assets:
+                  raise SystemExit("APK is missing touch HUD assets: " + ", ".join(missing_assets))
           with ZipFile(BytesIO(bundled_pk3)) as pk3:
               packaged = pk3.read("zscript/ui/statusbar/doom_sbar.zs")
           if packaged != source:
               raise SystemExit("APK contains a stale Doom HUD script")
-          print(f"Verified modified Doom HUD inside {apk_files[0]}")
+          print(f"Verified classic Doom status bar and mobile HUD v2 in {apk_files[0]}")
           PY
 
       - name: Upload debug APK
