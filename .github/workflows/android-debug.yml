@@ -57,9 +57,9 @@ jobs:
               names = apk.namelist()
               bundled_pk3 = apk.read("assets/uzdoom.pk3")
               native_libs = [apk.read(name) for name in names if name.endswith(".so")]
-              if not any(b"DOOM mobile HUD redesign v2" in lib for lib in native_libs):
+              if not any(b"DOOM mobile HUD redesign v3" in lib for lib in native_libs):
                   raise SystemExit("APK is missing the compiled mobile HUD v2 marker")
-              if not any(b"_doom_mobile_redesign_v2.xml" in lib for lib in native_libs):
+              if not any(b"_doom_mobile_redesign_v3.xml" in lib for lib in native_libs):
                   raise SystemExit("APK is missing the fresh v2 touch-layout profile")
               required_assets = ["shoot.png", "shoot_alt.png", "use.png", "jump.png",
                                  "map.png", "look_arrow.png", "strafe_arrow.png",
@@ -71,7 +71,60 @@ jobs:
               packaged = pk3.read("zscript/ui/statusbar/doom_sbar.zs")
           if packaged != source:
               raise SystemExit("APK contains a stale Doom HUD script")
-          print(f"Verified classic Doom status bar and mobile HUD v2 in {apk_files[0]}")
+
+          # Guard the final 26x16 landscape layout against accidental drift.
+          layout_source = Path("doom/src/main/jni/Clibs_OpenTouch/idtech1/touch_interface.cpp").read_text()
+          expected_layout = [
+              'RectF(22.0, 9.0, 26.0, 13.0)',       # primary fire
+              'RectF(6.2, 2.3, 8.7, 4.6)',          # alternate fire
+              'RectF(19.4, 10.0, 21.7, 12.4)',      # use
+              'RectF(22.6, 6.4, 25.0, 8.8)',        # jump
+              'RectF(0.5, 4.8, 8.5, 13.0)',         # movement zone
+              'RectF(10.0, 4.8, 19.0, 13.0)',       # look zone
+              'RectF(0.5, 2.3, 2.5, 4.3)',          # Heretic fly
+              'RectF(3.0, 2.3, 5.0, 4.3)',          # contextual inventory
+              'RectF(4.1, 0.25, 5.9, 2.05)',        # variant gamma
+              'RectF(20.6, 0.25, 22.2, 2.05)',      # weapon menu
+              'RectF(22.4, 0.25, 24.0, 2.05)',      # previous weapon
+              'RectF(24.2, 0.25, 25.8, 2.05)',      # next weapon
+          ]
+          missing_layout = [item for item in expected_layout if item not in layout_source]
+          if missing_layout:
+              raise SystemExit("Landscape HUD layout v3 drifted: " + "; ".join(missing_layout))
+
+          # Check all always-visible and variant-specific controls together.
+          # Weapon slots are included because the selector can open over gameplay.
+          regions = {
+              "back": (0, 0, 2, 2), "map": (2.1, .25, 3.9, 2.05),
+              "weapon1": (6, .3, 7.35, 1.65), "weapon2": (7.45, .3, 8.8, 1.65),
+              "weapon3": (8.9, .3, 10.25, 1.65), "weapon4": (10.35, .3, 11.7, 1.65),
+              "weapon5": (11.8, .3, 13.15, 1.65), "weapon6": (13.25, .3, 14.6, 1.65),
+              "weapon7": (14.7, .3, 16.05, 1.65), "weapon8": (16.15, .3, 17.5, 1.65),
+              "weapon9": (17.6, .3, 18.95, 1.65), "weapon0": (19.05, .3, 20.4, 1.65),
+              "show_weapons": (20.6, .25, 22.2, 2.05),
+              "prev_weapon": (22.4, .25, 24, 2.05), "next_weapon": (24.2, .25, 25.8, 2.05),
+              "alt_fire": (6.2, 2.3, 8.7, 4.6), "move": (.5, 4.8, 8.5, 13),
+              "look": (10, 4.8, 19, 13), "use": (19.4, 10, 21.7, 12.4),
+              "fire": (22, 9, 26, 13),
+          }
+          variants = {
+              "Doom": {},
+              "Heretic": {"fly": (.5, 2.3, 2.5, 4.3), "inventory": (3, 2.3, 5, 4.3)},
+              "Hexen": {"inventory": (3, 2.3, 5, 4.3), "jump": (22.6, 6.4, 25, 8.8)},
+              "Strife": {"inventory": (3, 2.3, 5, 4.3), "jump": (22.6, 6.4, 25, 8.8)},
+              "Doom 64": {"jump": (22.6, 6.4, 25, 8.8)},
+              "Retro/Chocolate/PrBoom": {"gamma": (4.1, .25, 5.9, 2.05)},
+          }
+          for variant, extras in variants.items():
+              active = dict(regions)
+              active.update(extras)
+              entries = list(active.items())
+              for index, (name_a, a) in enumerate(entries):
+                  for name_b, b in entries[index + 1:]:
+                      overlap = a[0] < b[2] and b[0] < a[2] and a[1] < b[3] and b[1] < a[3]
+                      if overlap:
+                          raise SystemExit(f"{variant} HUD hitboxes overlap: {name_a} / {name_b}")
+          print(f"Verified classic Doom status bar and collision-checked mobile HUD v3 in {apk_files[0]}")
           PY
 
       - name: Upload debug APK
