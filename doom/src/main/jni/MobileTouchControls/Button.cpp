@@ -169,8 +169,9 @@ bool Button::drawGL(bool forEditor)
                 tag == "weapon2" || tag == "weapon3" || tag == "weapon4" ||
                 tag == "weapon5" || tag == "weapon6" || tag == "weapon7" ||
                 tag == "weapon8" || tag == "weapon9";
-            const bool hudButton = tag == "attack" || tag == "attack2" ||
-                tag == "use" || tag == "jump" || tag == "map" ||
+            const bool hudButton = tag == "back" || tag == "attack" ||
+                tag == "attack2" || tag == "use" || tag == "jump" ||
+                tag == "map" || tag == "gamma" || tag == "use_inventory" ||
                 tag == "show_weapons" || tag == "next_weapon" ||
                 tag == "prev_weapon" || weaponSlot;
             const float buttonAlpha = drawA * drawAlpha;
