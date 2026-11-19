@@ -237,7 +237,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
         hideFlySlide = false;
 
     // Quad slider for fly controls
-    touchcontrols::QuadSlide *flyQs = new touchcontrols::QuadSlide("quad_slide_fly", touchcontrols::RectF(0.5, 2.3, 2.5, 4.3), "wings", "slide_arrow", PORT_ACT_FLY_UP, 0, PORT_ACT_FLY_DOWN, 0, hideFlySlide,
+    touchcontrols::QuadSlide *flyQs = new touchcontrols::QuadSlide("quad_slide_fly", touchcontrols::RectF(0.5, 2.3, 2.5, 4.3), "quad_slide", "slide_arrow", PORT_ACT_FLY_UP, 0, PORT_ACT_FLY_DOWN, 0, hideFlySlide,
                                                                    "Heretic fly slider");
     flyQs->signal.connect(sigc::mem_fun(this, &TouchInterface::gameButton));
     tcGameMain->addControl(flyQs);
@@ -498,7 +498,7 @@ void TouchInterface::createControlsDoom(std::string filesPath)
     ".xml");
     tcGameWeapons->setXMLFile((std::string) filesPath + "/weapons_"
     ENGINE_NAME
-    "_doom_mobile_redesign_v2.xml");
+    "_doom_mobile_redesign_v3.xml");
     tcCustomButtons->setXMLFile((std::string) filesPath + "/custom_buttons_0_"
     ENGINE_NAME
     ".xml");
