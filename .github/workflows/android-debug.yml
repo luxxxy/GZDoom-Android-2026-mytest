@@ -58,12 +58,13 @@ jobs:
               bundled_pk3 = apk.read("assets/uzdoom.pk3")
               native_libs = [apk.read(name) for name in names if name.endswith(".so")]
               if not any(b"DOOM mobile HUD redesign v3" in lib for lib in native_libs):
-                  raise SystemExit("APK is missing the compiled mobile HUD v2 marker")
+                  raise SystemExit("APK is missing the compiled mobile HUD v3 marker")
               if not any(b"_doom_mobile_redesign_v3.xml" in lib for lib in native_libs):
-                  raise SystemExit("APK is missing the fresh v2 touch-layout profile")
+                  raise SystemExit("APK is missing the fresh v3 touch-layout profile")
               required_assets = ["shoot.png", "shoot_alt.png", "use.png", "jump.png",
                                  "map.png", "look_arrow.png", "strafe_arrow.png",
-                                 "show_weapons.png", "next_weap.png", "prev_weap.png"]
+                                 "show_weapons.png", "next_weap.png", "prev_weap.png",
+                             "quad_slide.png", "slide_arrow.png"]
               missing_assets = [name for name in required_assets if f"assets/{name}" not in names]
               if missing_assets:
                   raise SystemExit("APK is missing touch HUD assets: " + ", ".join(missing_assets))
@@ -74,6 +75,12 @@ jobs:
 
           # Guard the final 26x16 landscape layout against accidental drift.
           layout_source = Path("doom/src/main/jni/Clibs_OpenTouch/idtech1/touch_interface.cpp").read_text()
+          if '"/game_"' not in layout_source or '"/weapons_"' not in layout_source:
+              raise SystemExit("APK source is missing the game/weapon touch profile paths")
+          if layout_source.count('"_doom_mobile_redesign_v3.xml"') < 2:
+              raise SystemExit("Both game and weapon touch profiles must use v3")
+          if '"quad_slide", "slide_arrow"' not in layout_source or '"wings", "slide_arrow"' in layout_source:
+              raise SystemExit("Heretic fly slider must use the packaged quad_slide texture")
           expected_layout = [
               'RectF(22.0, 9.0, 26.0, 13.0)',       # primary fire
               'RectF(6.2, 2.3, 8.7, 4.6)',          # alternate fire
@@ -124,7 +131,7 @@ jobs:
                       overlap = a[0] < b[2] and b[0] < a[2] and a[1] < b[3] and b[1] < a[3]
                       if overlap:
                           raise SystemExit(f"{variant} HUD hitboxes overlap: {name_a} / {name_b}")
-          print(f"Verified classic Doom status bar and collision-checked mobile HUD v3 in {apk_files[0]}")
+          print(f"Verified classic Doom status bar, v3 game/weapon profiles, fly-slider textures, and collision-checked mobile HUD in {apk_files[0]}")
           PY
 
       - name: Upload debug APK
